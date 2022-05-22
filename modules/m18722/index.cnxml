@@ -1,0 +1,323 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Manifolds</title>
+  <metadata>
+  <md:content-id>m18722</md:content-id><md:title>Manifolds</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>05f2b39f-feac-4978-abcd-839412740392</md:uuid>
+</metadata>
+
+<content>
+    
+    
+      <para id="id2253734">As we will soon discuss, manifold models can provide an alternative to signal dictionaries as a framework for concise signal modeling. In this module, we present a minimal set of definitions and terminology from differential geometry and topology that serve as an introduction to manifolds. We refer the reader to the introductory and classical texts <link target-id="bid0"/>, <link target-id="bid1"/>, <link target-id="bid2"/>, <link target-id="bid3"/> for more depth and
+technical precision.</para>
+      <section id="uid1">
+        <title>General terminology</title>
+        <para id="id2253771">A <m:math><m:mi>K</m:mi></m:math>-dimensional manifold
+ <m:math><m:mi mathvariant="script">M</m:mi></m:math> is a topological
+space<footnote id="id27477077">A <emphasis>topological space</emphasis> is simply a set <m:math><m:mi>X</m:mi></m:math>,
+together with a collection <m:math><m:mi>T</m:mi></m:math> of subsets of <m:math><m:mi>X</m:mi></m:math> called open sets,
+such that: (i) the empty set belongs to <m:math><m:mi>T</m:mi></m:math>, (ii) <m:math><m:mi>X</m:mi></m:math> belongs to
+<m:math><m:mi>T</m:mi></m:math>, (iii) arbitrary unions of elements of <m:math><m:mi>T</m:mi></m:math> belong to <m:math><m:mi>T</m:mi></m:math>, and
+(iv) finite intersections of elements of <m:math><m:mi>T</m:mi></m:math> belong to <m:math><m:mi>T</m:mi></m:math>.</footnote> that
+is locally homeomorphic<footnote id="id27477156">A <emphasis>homeomorphism</emphasis> is a
+function between two topological spaces that is one-to-one, onto,
+continuous, and has a continuous inverse.</footnote> to
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math> <link target-id="bid2"/>. This means that there exists an
+open cover of <m:math><m:mi mathvariant="script">M</m:mi></m:math> with each such open set mapping
+homeomorphically to an open ball in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math>. Each such open
+set, together with its mapping to <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math> is called a <emphasis>chart</emphasis>; the set of all charts of a manifold is called an <emphasis>atlas</emphasis>.</para>
+        <para id="id2254001">The general definition of a manifold makes no reference to an
+ambient space in which the manifold lives. However, as we will
+often be making use of manifolds as models for sets of signals, it
+follows that such “signal manifolds” are actually subsets of
+some larger space (for example, of <m:math><m:mrow><m:msub><m:mi>L</m:mi><m:mn>2</m:mn></m:msub><m:mrow><m:mo>(</m:mo><m:mi mathvariant="double-struck">R</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> or <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>).
+In general, we may think of a <m:math><m:mi>K</m:mi></m:math>-dimensional submanifold
+embedded in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> as a nonlinear, <m:math><m:mi>K</m:mi></m:math>-dimensional
+“surface” within <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>.</para>
+      </section>
+      <section id="uid4">
+        <title>Examples of manifolds</title>
+        <para id="id2254355">One of the simplest examples of a manifold is simply the circle in
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>2</m:mn></m:msup></m:math>. A small, open-ended segment cut from the circle could
+be stretched out and associated with an open interval of the real
+line (see <link target-id="uid5"/>). Hence, the circle is a 1-D
+manifold. (We note that at least two charts are required to form
+an atlas for the circle, as the entire circle itself cannot be
+mapped homeomorphically to an open interval in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>1</m:mn></m:msup></m:math>.)</para>
+        <figure id="uid5" orient="horizontal">
+          <media id="id27493546" alt=""><image src="../../media/circleManifold-7349.png" mime-type="image/png" width="578"/><image for="pdf" src="../../media/circleManifold.eps" mime-type="application/postscript"/></media>
+          <caption>A circle is a manifold
+because there exists an open cover consisting of the sets
+<m:math><m:mrow><m:msub><m:mi>U</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>U</m:mi><m:mn>2</m:mn></m:msub></m:mrow></m:math>, which are mapped homeomorphically onto open intervals
+in the real line via the functions <m:math><m:mrow><m:msub><m:mi>ϕ</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>ϕ</m:mi><m:mn>2</m:mn></m:msub></m:mrow></m:math>. (It is
+not necessary that the intervals intersect in <m:math><m:mi mathvariant="double-struck">R</m:mi></m:math>.)
+
+</caption>
+        </figure>
+        <para id="id2254487">We refer the reader to <link target-id="bid4"/> for an excellent overview of
+several manifolds with relevance to signal processing, including
+the rotation group <m:math><m:mrow><m:mi>S</m:mi><m:mi>O</m:mi><m:mo>(</m:mo><m:mn>3</m:mn><m:mo>)</m:mo></m:mrow></m:math>, which can be used for representing
+orientations of objects in 3-D space, and the Grassman manifold
+<m:math><m:mrow><m:mi>G</m:mi><m:mo>(</m:mo><m:mi>K</m:mi><m:mo>,</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math>, which represents all <m:math><m:mi>K</m:mi></m:math>-dimensional
+subspaces of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. (Without working through the
+technicalities of the definition of a manifold, it is easy to see
+that both types of data have a natural notion of neighborhood.)</para>
+      </section>
+      <section id="uid6">
+        <title>Tangent spaces</title>
+        <para id="id2254575">A manifold is <emphasis>differentiable</emphasis> if, for any two charts whose
+open sets on <m:math><m:mi mathvariant="script">M</m:mi></m:math> overlap, the composition of the
+corresponding homeomorphisms (from <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math> in one chart to
+<m:math><m:mi mathvariant="script">M</m:mi></m:math> and back to <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math> in the other) is
+differentiable. (In our simple example, the circle is a
+differentiable manifold.)</para>
+        <para id="id2254642">To each point <m:math><m:mi>x</m:mi></m:math> in a differentiable manifold, we may associate a
+<m:math><m:mi>K</m:mi></m:math>-dimensional <emphasis>tangent space</emphasis><m:math><m:mspace width="4pt"/><m:msub><m:mi> Tan </m:mi><m:mi>x</m:mi></m:msub></m:math>. For signal
+manifolds embedded in <m:math><m:msub><m:mi>L</m:mi><m:mn>2</m:mn></m:msub></m:math> or <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, it suffices to think
+of <m:math><m:msub><m:mi> Tan </m:mi><m:mi>x</m:mi></m:msub></m:math> as the set of all directional derivatives of
+smooth paths on <m:math><m:mi mathvariant="script">M</m:mi></m:math> through <m:math><m:mi>x</m:mi></m:math>. (Note that <m:math><m:msub><m:mi> Tan </m:mi><m:mi>x</m:mi></m:msub></m:math>
+is a linear subspace and has its origin at 0, rather than at
+<m:math><m:mi>x</m:mi></m:math>.)</para>
+      </section>
+      <section id="uid7">
+        <title>Distances</title>
+        <para id="id2254781">One is often interested in measuring distance along a manifold.
+For abstract differentiable manifolds, this can be accomplished by
+defining a Riemannian metric on the tangent spaces. A Riemannian
+metric is a collection of inner products <m:math><m:msub><m:mfenced open="〈" close="〉"><m:mo>,</m:mo></m:mfenced><m:mi>x</m:mi></m:msub></m:math> defined at
+each point <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math>. The inner product gives a measure
+for the “length” of a tangent, and one can then compute the
+length of a path on <m:math><m:mi mathvariant="script">M</m:mi></m:math> by integrating its tangent lengths
+along the path.</para>
+        <para id="id2254840">For differentiable manifolds embedded in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, the natural
+metric is the Euclidean metric inherited from the ambient space.
+The length of a path <m:math><m:mrow><m:mi>γ</m:mi><m:mo>:</m:mo><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo><m:mo>↦</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math> can then be
+computed simply using the limit
+<equation id="uid79700970324">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi> length </m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>γ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:munder>
+                <m:mo movablelimits="true" form="prefix">lim</m:mo>
+                <m:mrow>
+                  <m:mi>j</m:mi>
+                  <m:mo>→</m:mo>
+                  <m:mi>∞</m:mi>
+                </m:mrow>
+              </m:munder>
+              <m:munderover>
+                <m:mo>∑</m:mo>
+                <m:mrow>
+                  <m:mi>i</m:mi>
+                  <m:mo>=</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+                <m:mi>j</m:mi>
+              </m:munderover>
+              <m:msub>
+                <m:mfenced separators="" open="∥" close="∥">
+                  <m:mi>γ</m:mi>
+                  <m:mo>(</m:mo>
+                  <m:mi>i</m:mi>
+                  <m:mo>/</m:mo>
+                  <m:mi>j</m:mi>
+                  <m:mo>)</m:mo>
+                  <m:mo>-</m:mo>
+                  <m:mi>γ</m:mi>
+                  <m:mo>(</m:mo>
+                  <m:mo>(</m:mo>
+                  <m:mi>i</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>)</m:mo>
+                  <m:mo>/</m:mo>
+                  <m:mi>j</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mfenced>
+                <m:mn>2</m:mn>
+              </m:msub>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+The <emphasis>geodesic distance</emphasis> <m:math><m:mspace width="3pt"/><m:mrow><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>x</m:mi><m:mo>,</m:mo><m:mi>y</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> between two points <m:math><m:mrow><m:mi>x</m:mi><m:mo>,</m:mo><m:mi>y</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math> is then given by the length of the shortest path
+<m:math><m:mi>γ</m:mi></m:math> on <m:math><m:mi mathvariant="script">M</m:mi></m:math> joining <m:math><m:mi>x</m:mi></m:math> and <m:math><m:mi>y</m:mi></m:math>.</para>
+        
+        
+      </section>
+      
+      <section id="uid9"><title>Condition number</title>
+        
+        <para id="id2255187">To establish a firm footing for analysis, we find it
+helpful assume a certain regularity to the manifold beyond mere
+differentiability. For this purpose, we adopt the condition number
+defined recently by Niyogi et al. <link target-id="bid5"/>.</para>
+        
+<rule id="ruleexample" type="Definition"><label>Definition</label>
+  <statement id="id27487894">
+
+<para id="id2255204"><link target-id="bid5"/>
+Let <m:math><m:mi mathvariant="script">M</m:mi></m:math> be a compact submanifold of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. The <emphasis>condition number</emphasis> of <m:math><m:mi mathvariant="script">M</m:mi></m:math> is defined as <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>,
+where <m:math><m:mi>τ</m:mi></m:math> is the largest number having the following
+property: The open normal bundle about <m:math><m:mi mathvariant="script">M</m:mi></m:math> of radius <m:math><m:mi>r</m:mi></m:math>
+is imbedded in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> for all <m:math><m:mrow><m:mi>r</m:mi><m:mo>&lt;</m:mo><m:mi>τ</m:mi></m:mrow></m:math>.</para></statement>
+</rule>
+        <para id="id2255332">The open normal bundle of radius <m:math><m:mi>r</m:mi></m:math> at a point <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math>
+is simply the collection of all vectors of length <m:math><m:mrow><m:mo>&lt;</m:mo><m:mi>r</m:mi></m:mrow></m:math> anchored
+at <m:math><m:mi>x</m:mi></m:math> and with direction orthogonal to <m:math><m:msub><m:mi> Tan </m:mi><m:mi>x</m:mi></m:msub></m:math>.</para>
+        <para id="id2255399">In addition to controlling local properties (such as curvature) of
+the manifold, the condition number has a global effect as well,
+ensuring that the manifold is self-avoiding. These notions are
+made precise in several lemmata, which we repeat below for completeness.</para>
+        
+<rule id="lemmaexample" type="Lemma"><label>Lemma</label>
+  <statement id="id27488086">
+<para id="id2255408"><link target-id="bid5"/>
+If <m:math><m:mi mathvariant="script">M</m:mi></m:math> is a submanifold
+of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> with condition number <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>, then the
+norm of the second fundamental form is bounded by <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>
+in all directions.</para></statement>
+</rule>
+        <para id="id2255474">This implies that unit-speed geodesic paths on <m:math><m:mi mathvariant="script">M</m:mi></m:math> have
+curvature bounded by <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>. The second lemma concerns the
+twisting of tangent spaces.</para>
+       
+<rule id="ruleexample2" type="Lemma"><label>Lemma</label>
+  <statement id="id27476340">
+ <para id="id2255506"><link target-id="bid5"/>
+Let <m:math><m:mi mathvariant="script">M</m:mi></m:math> be a submanifold
+of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> with condition number <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>. Let <m:math><m:mrow><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math> be two points with geodesic distance given by
+<m:math><m:mrow><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>. Let <m:math><m:mi>θ</m:mi></m:math> be the angle between the tangent
+spaces <m:math><m:msub><m:mi> Tan </m:mi><m:mi>p</m:mi></m:msub></m:math> and <m:math><m:msub><m:mi> Tan </m:mi><m:mi>q</m:mi></m:msub></m:math> defined by <m:math><m:mrow><m:mo form="prefix">cos</m:mo><m:mrow><m:mo>(</m:mo><m:mi>θ</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:msub><m:mo movablelimits="true" form="prefix">min</m:mo><m:mrow><m:mi>u</m:mi><m:mo>∈</m:mo><m:msub><m:mi> Tan </m:mi><m:mi>p</m:mi></m:msub></m:mrow></m:msub><m:msub><m:mo movablelimits="true" form="prefix">max</m:mo><m:mrow><m:mi>v</m:mi><m:mo>∈</m:mo><m:msub><m:mi> Tan </m:mi><m:mi>q</m:mi></m:msub></m:mrow></m:msub><m:mrow><m:mo>|</m:mo><m:mrow><m:mo>〈</m:mo><m:mi>u</m:mi><m:mo>,</m:mo><m:mi>v</m:mi><m:mo>〉</m:mo></m:mrow><m:mo>|</m:mo></m:mrow></m:mrow></m:math>. Then <m:math><m:mrow><m:mo form="prefix">cos</m:mo><m:mrow><m:mo>(</m:mo><m:mi>θ</m:mi><m:mo>)</m:mo></m:mrow><m:mo>&gt;</m:mo><m:mn>1</m:mn><m:mo>-</m:mo><m:mfrac><m:mn>1</m:mn><m:mi>τ</m:mi></m:mfrac><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.</para></statement>
+</rule>
+        <para id="id2255788">The third lemma concerns self-avoidance of <m:math><m:mi mathvariant="script">M</m:mi></m:math>.</para>
+       
+
+
+<rule id="ruleexample3" type="Lemma"><label>Lemma</label>
+  <statement id="id27476610"> <para id="id2255804"><link target-id="bid5"/>
+Let <m:math><m:mi mathvariant="script">M</m:mi></m:math> be a submanifold of
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> with condition number <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>. Let <m:math><m:mrow><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math> be two points such that <m:math><m:mrow><m:msub><m:mfenced separators="" open="∥" close="∥"><m:mi>p</m:mi><m:mo>-</m:mo><m:mi>q</m:mi></m:mfenced><m:mn>2</m:mn></m:msub><m:mo>=</m:mo><m:mi>d</m:mi></m:mrow></m:math>. Then for all
+<m:math><m:mrow><m:mi>d</m:mi><m:mo>≤</m:mo><m:mi>τ</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>, the geodesic distance <m:math><m:mrow><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math> is
+bounded by <m:math><m:mrow><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow><m:mo>≤</m:mo><m:mi>τ</m:mi><m:mo>-</m:mo><m:mi>τ</m:mi><m:msqrt><m:mrow><m:mn>1</m:mn><m:mo>-</m:mo><m:mn>2</m:mn><m:mi>d</m:mi><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:msqrt></m:mrow></m:math>.</para>
+</statement>
+</rule>
+
+
+        <para id="id2256010">From  <link target-id="ruleexample3"/> we have an immediate corollary.</para>
+       
+<rule id="ruleexample4" type="Corollary"><label>Corollary</label>
+  <statement id="id27506921">
+ <para id="id2256019">Let <m:math><m:mi mathvariant="script">M</m:mi></m:math> be a submanifold of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> with condition
+number <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>τ</m:mi></m:mrow></m:math>. Let <m:math><m:mrow><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">M</m:mi></m:mrow></m:math> be two points such
+that <m:math><m:mrow><m:msub><m:mfenced separators="" open="∥" close="∥"><m:mi>p</m:mi><m:mo>-</m:mo><m:mi>q</m:mi></m:mfenced><m:mn>2</m:mn></m:msub><m:mo>=</m:mo><m:mi>d</m:mi></m:mrow></m:math>. If <m:math><m:mrow><m:mi>d</m:mi><m:mo>≤</m:mo><m:mi>τ</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>, then <m:math><m:mrow><m:mi>d</m:mi><m:mo>≥</m:mo><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow><m:mo>-</m:mo><m:mfrac><m:msup><m:mrow><m:mo>(</m:mo><m:msub><m:mi>d</m:mi><m:mi mathvariant="script">M</m:mi></m:msub><m:mrow><m:mo>(</m:mo><m:mi>p</m:mi><m:mo>,</m:mo><m:mi>q</m:mi><m:mo>)</m:mo></m:mrow><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msup><m:mrow><m:mn>2</m:mn><m:mi>τ</m:mi></m:mrow></m:mfrac></m:mrow></m:math>.</para></statement>
+</rule>
+      </section>
+      
+
+  </content>
+  <bib:file>
+    <bib:entry id="bid3">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Boothby, W. M.</bib:author>
+        <bib:title>An Introduction to Differentiable Manifolds and Riemannian Geometry</bib:title>
+        <bib:publisher>Academic Press</bib:publisher>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address/>
+        <bib:edition>revised 2nd</bib:edition>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Hirsch, M. W.</bib:author>
+        <bib:title>Differential Topology</bib:title>
+        <bib:publisher>Springer</bib:publisher>
+        <bib:year>1976</bib:year>
+<!--optional fields-->
+        <bib:volume>33</bib:volume>
+        <bib:series>Graduate Texts in Mathematics</bib:series>
+        <bib:address/>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Morgan, F.</bib:author>
+        <bib:title>Riemannian Geometry: A Beginner's Guide</bib:title>
+        <bib:publisher>A K Peters</bib:publisher>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address/>
+        <bib:edition>2nd</bib:edition>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Niyogi, P. and Smale, S. and Weinberger, S.</bib:author>
+        <bib:title>Finding the Homology of Submanifolds with Confidence from Random Samples</bib:title>
+        <bib:journal/>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:book>
+<!--required fields-->
+        <bib:author>O'Neill, B.</bib:author>
+        <bib:title>Elementary Differential Geometry</bib:title>
+        <bib:publisher>Harcourt Academic Press</bib:publisher>
+        <bib:year>1997</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address/>
+        <bib:edition>2nd</bib:edition>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Rahman, I. Ur and Drori, I. and Stodden, V. C. and Donoho, D. L. and Schroeder, P.</bib:author>
+        <bib:title>Multiscale representations for manifold-valued data</bib:title>
+        <bib:journal/>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

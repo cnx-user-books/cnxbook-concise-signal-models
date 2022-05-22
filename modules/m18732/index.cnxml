@@ -1,0 +1,669 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Dimensionality Reduction</title>
+  <metadata>
+  <md:content-id>m18732</md:content-id><md:title>Dimensionality Reduction</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>6b374dcb-d767-424f-8fb2-f9a32ecf32dc</md:uuid>
+</metadata>
+
+<content>
+    
+    
+      <para id="id2253734">Recent years have seen a proliferation of novel techniques for
+what can loosely be termed “dimensionality reduction.”
+Like the tasks of approximation and compression discussed above,
+these methods involve some aspect in which low-dimensional
+information is extracted about a signal or collection of signals
+in some high-dimensional ambient space.
+Unlike the tasks of approximation and compression, however, the
+goal of these methods is not always to maintain a faithful
+representation of each signal.
+Instead, the purpose may be to preserve some critical
+relationships among elements of a data set or to discover
+information about a manifold on which the data lives.</para>
+      <para id="id2253751">In this section, we review two general methods for dimensionality
+reduction. <link target-id="uid1"/> begins with a brief
+overview of techniques for manifold learning. <link target-id="uid2"/>
+then discusses the Johnson-Lindenstrauss (JL) lemma, which
+concerns the isometric embedding of a cloud points as it is
+projected to a lower-dimensional space. Though at first glance the
+JL lemma does not pertain to any of the low-dimensional signal
+models we have previously discussed, we later see in
+<link document="m18733" target-id="uid16">Connections with dimensionality reduction</link><!--Section 2.8.6--> that the JL lemma plays a critical role
+in the core theory of CS, and we also employ the JL lemma in
+developing a theory for isometric embeddings of manifolds.</para>
+      <section id="uid1"><title>Manifold learning</title><para id="id2253795">Several techniques have been proposed for solving a problem known as <emphasis>manifold learning</emphasis> in which certain properties of a manifold are inferred from a discrete collection of points sampled from that manifold. A typical manifold learning setup is as follows: an algorithm is presented with a set of <m:math><m:mi>P</m:mi></m:math> points sampled from a <m:math><m:mi>K</m:mi></m:math>-dimensional
+submanifold of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. The goal of the algorithm is to produce an mapping of these <m:math><m:mi>P</m:mi></m:math> points into some lower dimension
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math> (ideally, <m:math><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mi>K</m:mi></m:mrow></m:math>) while preserving some
+characteristic property of the manifold.
+
+Example algorithms include
+ISOMAP <link target-id="bid0"/>, Hessian Eigenmaps
+(HLLE) <link target-id="bid1"/>, and Maximum Variance Unfolding
+(MVU) <link target-id="bid2"/>, which attempt to learn isometric embeddings of
+the manifold (thus preserving pairwise geodesic distances in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>); Locally
+Linear Embedding (LLE) <link target-id="bid3"/>, which attempts to preserve
+local linear neighborhood structures among the embedded points;
+Local Tangent Space Alignment (LTSA) <link target-id="bid4"/>, which attempts
+to preserve local coordinates in each tangent space; and a method
+for charting a manifold <link target-id="bid5"/> that attempts to preserve
+local neighborhood structures. 
+
+
+
+</para>
+
+<para id="eip-160">The internal mechanics of these algorithms differs depending on the objective criterion to be preserved, but as an example, the ISOMAP algorithm operates by first estimating the geodesic distance between each pair of points on the manifold (by approximating geodesic distance as the sum of Euclidean distances between pairs of the available sample points). After the <m:math><m:mi>P</m:mi><m:mo>×</m:mo><m:mi>P</m:mi></m:math> matrix of pairwise geodesic distances is constructed, a technique known as multidimensional scaling uses an eigendecomposition of the distance matrix to determine the proper <m:math><m:mi>M</m:mi></m:math>-dimensional embedding space.
+An example of using ISOMAP to learn a <m:math><m:mn>2</m:mn></m:math>-dimensional manifold is shown in <link target-id="fs-id4895761"/>.</para>
+
+
+<figure id="fs-id4895761" orient="horizontal"><subfigure id="eip-id1168668573192">
+<media id="eip-id1168665442746" alt="">
+<image src="../../media/diskexample.png" mime-type="image/png" width="150"/>
+<image for="pdf" src="../../media/diskexample.eps" mime-type="application/postscript" print-width="1.25in"/>
+</media>
+</subfigure>
+<subfigure id="fs-id5911659">
+<media id="fs-id18755011" alt="">
+<image src="../../media/isomapCNXtrue1.png" mime-type="image/png" width="150"/>
+<image for="pdf" src="../../media/isomapCNXtrue1.eps" mime-type="application/postscript" print-width="1.25in"/>
+</media>
+</subfigure>
+<subfigure id="fs-id15911479">
+<media id="fs-id20071859" alt="">
+<image src="../../media/isomapCNXiso1.png" mime-type="image/png" width="150"/>
+<image for="pdf" src="../../media/isomapCNXiso1.eps" mime-type="application/postscript" print-width="1.25in"/> 
+</media>
+</subfigure>
+<subfigure id="eip-id1168666476739">
+<media id="eip-id1168666064429" alt="">
+<image src="../../media/isomapCNXiso1proj.png" mime-type="image/png" width="150"/>
+<image for="pdf" src="../../media/isomapCNXiso1proj.eps" mime-type="application/postscript" print-width="1.25in"/> 
+</media>
+</subfigure><caption>Manifold learning demonstration. (a) As input to the manifold learning algorithm, <m:math><m:mn>1000</m:mn></m:math> images of size <m:math><m:mn>64</m:mn><m:mo>×</m:mo><m:mn>64</m:mn></m:math> are created, where each image consists of a white disk translated to a random position <m:math><m:mrow><m:mo>(</m:mo><m:msub><m:mi>θ</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo> <m:msub><m:mi>θ</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow></m:math>. It follows that the images represent a sampling of <m:math><m:mn>1000</m:mn></m:math> points from a <m:math><m:mn>2</m:mn></m:math>-dimensional submanifold of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>4096</m:mn></m:msup></m:math>. (b) Scatter plot of the true values for the <m:math><m:mrow><m:mo>(</m:mo><m:msub><m:mi>θ</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo> <m:msub><m:mi>θ</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow></m:math> positions. For visibility in each plot, the color of each point indicates the true <m:math><m:msub><m:mi>θ</m:mi><m:mn>1</m:mn></m:msub></m:math> value. (c) ISOMAP embedding learned from original data points in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>4096</m:mn></m:msup></m:math>. From the low-dimensional embedding coordinates we can infer the relative positions of the original high-dimensional images. (d) ISOMAP embedding learned from a random projection of the data set to <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>, where <m:math><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mn>15</m:mn></m:mrow></m:math>. 
+</caption></figure>
+
+
+<para id="eip-589">These algorithms can be useful for
+learning the dimension and parametrizations of manifolds, for
+sorting data, for visualization and navigation through the data,
+and as preprocessing to make further analysis more tractable;
+common demonstrations include analysis of face images and
+classification of and handwritten digits. A related technique, the
+Whitney Reduction Network <link target-id="bid6"/>, <link target-id="bid7"/>,
+seeks a linear mapping to <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math> that preserves ambient
+pairwise distances on the manifold and is particularly useful for
+processing the output of dynamical systems having low-dimensional
+attractors.</para>
+
+        <para id="id2253962">Other algorithms have been proposed for characterizing manifolds
+from sampled data without constructing an explicit embedding in
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>. The Geodesic Minimal Spanning Tree
+(GMST) <link target-id="bid8"/> models the data as random samples from the
+manifold and estimates the corresponding entropy and
+dimensionality. Another technique <link target-id="bid9"/> has been proposed
+for using random samples of a manifold to estimate its homology
+(via the Betti numbers, which essentially characterize its
+dimension, number of connected components, etc.). Persistence
+Barcodes <link target-id="bid10"/> are a related technique that
+involves constructing a type of signature for a manifold (or
+simply a shape) that uses tangent complexes to detect and
+characterize local edges and corners.</para>
+        <para id="id2254016">Additional algorithms have been proposed for constructing
+meaningful functions on the point samples in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. To
+solve a semi-supervised learning problem, a method called
+Laplacian Eigenmaps <link target-id="bid11"/> has been proposed that involves
+forming an adjacency graph for the data in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, computing
+eigenfunctions of the Laplacian operator on the graph (which form
+a basis for <m:math><m:msub><m:mi>L</m:mi><m:mn>2</m:mn></m:msub></m:math> on the graph), and using these functions to
+train a classifier on the data. The resulting classifiers have
+been used for handwritten digit recognition, document
+classification, and phoneme classification. (The <m:math><m:mi>M</m:mi></m:math> smoothest
+eigenfunctions can also be used to embed the manifold in <m:math><m:mi>M</m:mi></m:math>,
+similar to the approaches described above.) A related method
+called Diffusion Wavelets <link target-id="bid12"/> uses powers of the
+diffusion operator to model scale on the manifold, then constructs
+wavelets to capture local behavior at each scale. The result is a
+wavelet transform adapted not to geodesic distance but to
+diffusion distance, which measures (roughly) the number of paths
+connecting two points.</para>
+      </section>
+      <section id="uid2"><title>The Johnson-Lindenstrauss lemma</title><section id="eip-id1169869765256"><title>Fundamentals</title>
+        
+        <para id="id2254123">As with the above techniques in manifold learning, the
+Johnson-Lindenstrauss (JL)
+lemma <link target-id="bid13"/>, <link target-id="bid14"/>, <link target-id="bid15"/>, <link target-id="bid16"/> provides a
+method for dimensionality reduction of a set of data in
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. Unlike manifold-based methods, however, the JL lemma
+can be used for any arbitrary set <m:math><m:mi>Q</m:mi></m:math> of points in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>;
+the data set is not assumed to have any a priori structure.</para>
+        <para id="id2254196">Despite the apparent lack of structure in an arbitrary point cloud data set, the JL lemma suggests that there does exist a method for dimensionality reduction of that data set that can preserve key information while mapping the data to a lower-dimensional space
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>. In particular, the original formulation of the JL
+lemma <link target-id="bid13"/> states that there exists a Lipschitz mapping
+<m:math><m:mrow><m:mi>Φ</m:mi><m:mo>:</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup><m:mo>↦</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:mrow></m:math> with <m:math><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mi>O</m:mi><m:mo>(</m:mo><m:mo form="prefix">log</m:mo><m:mo>(</m:mo><m:mo>#</m:mo><m:mi>Q</m:mi><m:mo>)</m:mo><m:mo>)</m:mo></m:mrow></m:math> such that all pairwise distances between points in <m:math><m:mi>Q</m:mi></m:math> are
+approximately preserved. This fact is useful for solving problems
+such as <emphasis>Approximate Nearest Neighbor</emphasis> <link target-id="bid16"/>, in
+which one desires the nearest point in <m:math><m:mi>Q</m:mi></m:math> to some query point <m:math><m:mrow><m:mi>y</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math> (but a solution not much further than the optimal
+point is also acceptable). Such problems can be solved
+significantly more quickly in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math> than in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>.</para>
+        <para id="id2253048">Recent reformulations of the JL lemma propose random linear
+operators that, with high probability, will ensure a near
+isometric embedding. These typically build on concentration of
+measure results such as the following.</para>
+
+<rule id="ruleexample" type="Lemma"><label>Lemma</label>
+  <statement id="id9411894">
+
+        <para id="id2253055"><link target-id="bid14"/>, <link target-id="bid15"/>
+Let <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math>, fix <m:math><m:mrow><m:mn>0</m:mn><m:mo>&lt;</m:mo><m:mi>ϵ</m:mi><m:mo>&lt;</m:mo><m:mn>1</m:mn></m:mrow></m:math>, and let <m:math><m:mi>Φ</m:mi></m:math> be
+a matrix constructed in one of the following two manners:</para>
+        <list id="id2254704" list-type="enumerated">
+          <item id="uid3"><m:math><m:mi>Φ</m:mi></m:math> is a random <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix with i.i.d. <m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:msup><m:mi>σ</m:mi><m:mn>2</m:mn></m:msup><m:mo>)</m:mo></m:mrow></m:math> entries, where <m:math><m:mrow><m:msup><m:mi>σ</m:mi><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>N</m:mi></m:mrow></m:math>, or
+</item>
+          <item id="uid4"><m:math><m:mi>Φ</m:mi></m:math> is random orthoprojector from <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> to
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>.
+</item>
+        </list>
+        <para id="id2254844">Then with probability exceeding</para>
+        <equation id="id2254848">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mn>1</m:mn>
+              <m:mo>-</m:mo>
+              <m:mn>2</m:mn>
+              <m:mo form="prefix">exp</m:mo>
+              <m:mfenced separators="" open="(" close=")">
+                <m:mo>-</m:mo>
+                <m:mfrac>
+                  <m:mrow>
+                    <m:mi>M</m:mi>
+                    <m:mo>(</m:mo>
+                    <m:msup>
+                      <m:mi>ϵ</m:mi>
+                      <m:mn>2</m:mn>
+                    </m:msup>
+                    <m:mo>/</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mo>-</m:mo>
+                    <m:msup>
+                      <m:mi>ϵ</m:mi>
+                      <m:mn>3</m:mn>
+                    </m:msup>
+                    <m:mo>/</m:mo>
+                    <m:mn>3</m:mn>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mn>2</m:mn>
+                </m:mfrac>
+              </m:mfenced>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2254917">the following holds:</para>
+        <equation id="uid5">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>-</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>≤</m:mo>
+              <m:mfrac>
+                <m:msub>
+                  <m:mfenced separators="" open="∥" close="∥">
+                    <m:mi>Φ</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+                <m:msub>
+                  <m:mfenced open="∥" close="∥">
+                    <m:mi>x</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+              </m:mfrac>
+              <m:mo>≤</m:mo>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>+</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+</statement>
+</rule>
+        <para id="id2255011">The random orthoprojector referred to above is clearly related to
+the first case (simple matrix multiplication by a Gaussian <m:math><m:mi>Φ</m:mi></m:math>)
+but subtly different; one could think of constructing a random
+Gaussian <m:math><m:mi>Φ</m:mi></m:math>, then using Gram-Schmidt to orthonormalize the
+rows before multiplying <m:math><m:mi>x</m:mi></m:math>.  We
+note also that simple rescaling of <m:math><m:mi>Φ</m:mi></m:math> can be used to eliminate
+the <m:math><m:msqrt><m:mfrac><m:mi>M</m:mi><m:mi>N</m:mi></m:mfrac></m:msqrt></m:math> in <link target-id="uid5"/>; however we
+prefer this formulation for later reference.</para>
+        <para id="id2255094">By using the union bound over all <m:math><m:mfenced separators="" open="(" close=")"><m:mfrac linethickness="0pt"><m:mrow><m:mo>#</m:mo><m:mi>Q</m:mi></m:mrow><m:mn>2</m:mn></m:mfrac></m:mfenced></m:math> pairs of
+distinct points in <m:math><m:mi>Q</m:mi></m:math>, Lemma <link target-id="ruleexample2">"The Johnson-Lindenstrauss lemma"</link> can be used to prove
+a randomized version of the Johnson-Lindenstrauss lemma.</para>
+        
+<rule id="ruleexample2" type="Lemma"><label>Lemma</label>
+  <title>Johnson-Lindenstrauss</title>
+  <statement id="id7594741">
+
+<para id="id2255138">
+Let <m:math><m:mi>Q</m:mi></m:math> be a finite collection of points in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. Fix <m:math><m:mrow><m:mn>0</m:mn><m:mo>&lt;</m:mo><m:mi>ϵ</m:mi><m:mo>&lt;</m:mo><m:mn>1</m:mn></m:mrow></m:math> and <m:math><m:mrow><m:mi>β</m:mi><m:mo>&gt;</m:mo><m:mn>0</m:mn></m:mrow></m:math>. Set</para>
+        <equation id="id2255198">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>M</m:mi>
+              <m:mo>≥</m:mo>
+              <m:mfenced separators="" open="(" close=")">
+                <m:mfrac>
+                  <m:mrow>
+                    <m:mn>4</m:mn>
+                    <m:mo>+</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mi>β</m:mi>
+                  </m:mrow>
+                  <m:mrow>
+                    <m:msup>
+                      <m:mi>ϵ</m:mi>
+                      <m:mn>2</m:mn>
+                    </m:msup>
+                    <m:mo>/</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mo>-</m:mo>
+                    <m:msup>
+                      <m:mi>ϵ</m:mi>
+                      <m:mn>3</m:mn>
+                    </m:msup>
+                    <m:mo>/</m:mo>
+                    <m:mn>3</m:mn>
+                  </m:mrow>
+                </m:mfrac>
+              </m:mfenced>
+              <m:mo form="prefix">ln</m:mo>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mo>#</m:mo>
+                <m:mi>Q</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        <para id="id2255273">Let <m:math><m:mi>Φ</m:mi></m:math> be a matrix constructed in one of the following two
+manners:</para>
+        <list id="id2255288" list-type="enumerated">
+          <item id="uid6"><m:math><m:mi>Φ</m:mi></m:math> is a random <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix with i.i.d. <m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:msup><m:mi>σ</m:mi><m:mn>2</m:mn></m:msup><m:mo>)</m:mo></m:mrow></m:math> entries, where <m:math><m:mrow><m:msup><m:mi>σ</m:mi><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>N</m:mi></m:mrow></m:math>, or
+</item>
+          <item id="uid7"><m:math><m:mi>Φ</m:mi></m:math> is random orthoprojector from <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> to
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math>.
+</item>
+        </list>
+        <para id="id2255428">Then with probability exceeding <m:math><m:mrow><m:mn>1</m:mn><m:mo>-</m:mo><m:msup><m:mrow><m:mo>(</m:mo><m:mo>#</m:mo><m:mi>Q</m:mi><m:mo>)</m:mo></m:mrow><m:mrow><m:mo>-</m:mo><m:mi>β</m:mi></m:mrow></m:msup></m:mrow></m:math>, the
+following statement holds: for every <m:math><m:mrow><m:mi>x</m:mi><m:mo>,</m:mo><m:mi>y</m:mi><m:mo>∈</m:mo><m:mi>Q</m:mi></m:mrow></m:math>,</para>
+        <equation id="id2255482">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>-</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>≤</m:mo>
+              <m:mfrac>
+                <m:msub>
+                  <m:mfenced separators="" open="∥" close="∥">
+                    <m:mi>Φ</m:mi>
+                    <m:mi>x</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mi>Φ</m:mi>
+                    <m:mi>y</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+                <m:msub>
+                  <m:mfenced separators="" open="∥" close="∥">
+                    <m:mi>x</m:mi>
+                    <m:mo>-</m:mo>
+                    <m:mi>y</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+              </m:mfrac>
+              <m:mo>≤</m:mo>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>+</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+</statement>
+</rule>
+        <para id="id2255583">Indeed, <link target-id="bid14"/> establishes that both <link target-id="ruleexample"/> and
+<link target-id="ruleexample2"/> also hold when the elements of <m:math><m:mi>Φ</m:mi></m:math> are
+chosen i.i.d. from a random Rademacher distribution (<m:math><m:mrow><m:mo>±</m:mo><m:mi>σ</m:mi></m:mrow></m:math>
+with equal probability <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:math>) or from a similar ternary
+distribution (<m:math><m:mrow><m:mo>±</m:mo><m:msqrt><m:mn>3</m:mn></m:msqrt><m:mi>σ</m:mi></m:mrow></m:math> with equal probability <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>6</m:mn></m:mrow></m:math>;
+0 with probability <m:math><m:mrow><m:mn>2</m:mn><m:mo>/</m:mo><m:mn>3</m:mn></m:mrow></m:math>). These can further improve the
+computational benefits of the JL lemma.</para>
+</section>
+
+<section id="eip-188"><title>Connections with compressed sensing</title><para id="eip-79">In the following module on Compressed Sensing we will discuss further topics in dimensionality reduction that relate to the JL lemma. In particular, as discussed in <link document="m18733" target-id="uid16">Connections with dimensionality reduction</link>, the core mechanics of Compressed Sensing can be interpreted in terms of a stable embedding that arises for the family of <m:math><m:mi>K</m:mi></m:math>-sparse signals when observed with random measurements, and this stable embedding can be proved using the JL lemma. Furthermore, as discussed in  <link document="m18733" target-id="element-378">Stable embeddings of manifolds</link>, one can ensure a stable embedding of families of signals obeying manifold models under a sufficient number of random projections, with the theory again following from the JL lemma.</para></section>
+      </section>
+   
+  </content>
+  <bib:file>
+    <bib:entry id="bid14">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Achlioptas, D.</bib:author>
+        <bib:title>Database-friendly random projections</bib:title>
+        <bib:booktitle>Proc. Symp. Principles of Database Systems</bib:booktitle>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Broomhead, D. S. and Kirby, M.</bib:author>
+        <bib:title>A New Approach for Dimensionality Reduction: Theory and Algorithms</bib:title>
+        <bib:journal>SIAM J. of Applied Mathematics</bib:journal>
+        <bib:year>2000</bib:year>
+<!--optional fields-->
+        <bib:volume>60</bib:volume>
+        <bib:number>6</bib:number>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid7">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Broomhead, D. S. and Kirby, M. J.</bib:author>
+        <bib:title>The Whitney Reduction Network: A method for computing autoassociative graphs</bib:title>
+        <bib:journal>Neural Computation</bib:journal>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:volume>13</bib:volume>
+        <bib:number/>
+        <bib:pages>2595-2616</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid11">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Belkin, M. and Niyogi, P.</bib:author>
+        <bib:title>Laplacian Eigenmaps for Dimensionality Reduction and Data Representation</bib:title>
+        <bib:journal>Neural Computation</bib:journal>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:volume>15</bib:volume>
+        <bib:number>6</bib:number>
+        <bib:pages/>
+        <bib:month>June</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Brand, M.</bib:author>
+        <bib:title>Charting a manifold</bib:title>
+        <bib:booktitle>Proc. Neural Inform. Processing Systems - NIPS</bib:booktitle>
+        <bib:year>2002</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid8">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Costa, J. A. and Hero, A. O.</bib:author>
+        <bib:title>Geodesic entropic graphs for dimension and entropy estimation in manifold learning</bib:title>
+        <bib:journal>IEEE Trans. Signal Processing</bib:journal>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume>52</bib:volume>
+        <bib:number>8</bib:number>
+        <bib:pages/>
+        <bib:month>August</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid12">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Coifman, R. R. and Maggioni, M.</bib:author>
+        <bib:title>Diffusion Wavelets</bib:title>
+        <bib:journal>Appl. Comput. Harmon. Anal.</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid10">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Carlsson, G. and Zomorodian, A. and Collins, A. and Guibas, L.</bib:author>
+        <bib:title>Persistence Barcodes for Shapes</bib:title>
+        <bib:journal>Int. J. of Shape Modeling</bib:journal>
+        <bib:year/>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. L. and Grimes, C. E.</bib:author>
+        <bib:title>Hessian Eigenmaps: Locally linear embedding techniques for high-dimensional data</bib:title>
+        <bib:journal>Proc. Natl. Acad. Sci. USA</bib:journal>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:volume>100</bib:volume>
+        <bib:number>10</bib:number>
+        <bib:pages>5591-5596</bib:pages>
+        <bib:month>May</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid15">
+      <bib:techreport>
+<!--required fields-->
+        <bib:author>Dasgupta, S. and Gupta, A.</bib:author>
+        <bib:title>An elementary proof of the Johnson-Lindenstrauss Lemma</bib:title>
+        <bib:institution/>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:type>Technical report</bib:type>
+        <bib:number>TR-99-006</bib:number>
+        <bib:address>Berkeley, CA</bib:address>
+        <bib:month/>
+        <bib:note/>
+      </bib:techreport>
+    </bib:entry>
+    <bib:entry id="bid16">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Indyk, P. and Motwani, R.</bib:author>
+        <bib:title>Approximate nearest neighbors: Towards removing the curse of dimenstionality</bib:title>
+        <bib:booktitle>Proc. Symp. Theory of Computing</bib:booktitle>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>604-613</bib:pages>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid13">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Johnson, W. B and Lindenstrauss, J.</bib:author>
+        <bib:title>Extensions of Lipschitz mappings into a Hilbert space</bib:title>
+        <bib:booktitle>Proc. Conf. Modern Analysis and Probability</bib:booktitle>
+        <bib:year>1984</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>189-206</bib:pages>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid9">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Niyogi, P. and Smale, S. and Weinberger, S.</bib:author>
+        <bib:title>Finding the Homology of Submanifolds with Confidence from Random Samples</bib:title>
+        <bib:journal/>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Roweis, S. T. and Saul, L. K.</bib:author>
+        <bib:title>Nonlinear Dimensionality Reduction by Locally Linear Embedding</bib:title>
+        <bib:journal>Science</bib:journal>
+        <bib:year>2000</bib:year>
+<!--optional fields-->
+        <bib:volume>290</bib:volume>
+        <bib:number>5500</bib:number>
+        <bib:pages>2323-2326</bib:pages>
+        <bib:month>December</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Tenenbaum, J. B. and de Silva, V. and Langford, J. C.</bib:author>
+        <bib:title>A Global Geometric Framework for Nonlinear Dimensionality Reduction</bib:title>
+        <bib:journal>Science</bib:journal>
+        <bib:year>2000</bib:year>
+<!--optional fields-->
+        <bib:volume>290</bib:volume>
+        <bib:number>5500</bib:number>
+        <bib:pages>2319-2323</bib:pages>
+        <bib:month>December</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Weinberger, K. Q. and Saul, L. K.</bib:author>
+        <bib:title>Unsupervised learning of image manifolds by semidefinite programming</bib:title>
+        <bib:journal>Int. J. Computer Vision – Special Issue: Computer Vision and Pattern Recognition-CVPR 2004</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume>70</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages>77-90</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Zhang, Z. and Zha, H.</bib:author>
+        <bib:title>Principal Manifolds and Nonlinear Dimension Reduction via Tangent Space Alignment</bib:title>
+        <bib:journal>SIAM J. Scientific Comput.</bib:journal>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume>26</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

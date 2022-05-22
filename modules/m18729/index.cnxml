@@ -1,0 +1,402 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Compression</title>
+  <metadata>
+  <md:content-id>m18729</md:content-id><md:title>Compression</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>28d29a72-039e-490a-ad3f-7028411a1f06</md:uuid>
+</metadata>
+
+<content>
+    
+  
+      <section id="uid1">
+        <title>Transform coding</title>
+        <para id="id2253740">In <link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->, we measured the quality of a dictionary
+in terms of its <m:math><m:mi>K</m:mi></m:math>-term approximations to signals drawn
+from some class. One reason that such approximations are desirable
+is that they provide concise descriptions of the signal that can
+be easily stored, processed, etc. There is even speculation and
+evidence that neurons in the human visual system may use sparse
+coding to represent a scene <link target-id="bid0"/>.</para>
+        <para id="id2253774">For data compression, conciseness is often exploited in a popular
+technique known as <emphasis>transform coding</emphasis>. Given a signal <m:math><m:mi>f</m:mi></m:math> (for
+which a concise description may not be readily apparent in its
+native domain), the idea is simply to use the dictionary <m:math><m:mi>Ψ</m:mi></m:math> to
+transform <m:math><m:mi>f</m:mi></m:math> to its coefficients <m:math><m:mi>α</m:mi></m:math>, which can then be
+efficiently and easily described. As discussed above, perhaps the
+simplest strategy for summarizing a sparse <m:math><m:mi>α</m:mi></m:math> is simply to
+threshold, keeping the <m:math><m:mi>K</m:mi></m:math> largest coefficients and
+discarding the rest. A simple encoder would then just encode the
+positions and quantized values of these <m:math><m:mi>K</m:mi></m:math> coefficients.</para>
+      </section>
+      <section id="uid2"><title>Metric entropy</title>
+        
+        <para id="id2253862">Suppose <m:math><m:mi>f</m:mi></m:math> is a function and let
+<m:math><m:mover accent="true"><m:msub><m:mi>f</m:mi><m:mi>R</m:mi></m:msub><m:mo>^</m:mo></m:mover></m:math> be an approximation to <m:math><m:mi>f</m:mi></m:math>
+encoded using <m:math><m:mi>R</m:mi></m:math> bits. To evaluate the quality of a coding
+strategy, it is common to consider the <emphasis>asymptotic
+rate-distortion</emphasis> (R-D) performance, which measures the decay rate
+of <m:math><m:mrow><m:mrow><m:mo>∥</m:mo><m:mi>f</m:mi><m:mo>-</m:mo></m:mrow><m:mover accent="true"><m:msub><m:mi>f</m:mi><m:mi>R</m:mi></m:msub><m:mo>^</m:mo></m:mover><m:msub><m:mrow><m:mo>∥</m:mo></m:mrow><m:msub><m:mi>L</m:mi><m:mi>p</m:mi></m:msub></m:msub></m:mrow></m:math> as <m:math><m:mrow><m:mi>R</m:mi><m:mo>→</m:mo><m:mi>∞</m:mi></m:mrow></m:math>. The <emphasis>metric entropy</emphasis> <link target-id="bid1"/> for
+a class <m:math><m:mi mathvariant="script">F</m:mi></m:math> gives the best decay rate that can be achieved
+uniformly over all functions <m:math><m:mrow><m:mi>f</m:mi><m:mo>∈</m:mo><m:mi mathvariant="script">F</m:mi></m:mrow></m:math>. We note that this
+is a true measure for the complexity of a class and is tied to no
+particular dictionary or encoding strategy. The metric entropy
+also has a very geometric interpretation, as it relates to the
+smallest radius possible for a covering of <m:math><m:msup><m:mn>2</m:mn><m:mi>R</m:mi></m:msup></m:math> balls over
+the set <m:math><m:mi mathvariant="script">F</m:mi></m:math>.</para>
+        <para id="id2253065">Metric entropies are known for certain signal classes. For
+example, the results of Clements <link target-id="bid2"/> (extending
+those of Kolmogorov and Tihomirov <link target-id="bid1"/>) regarding
+metric entropy give bounds on the optimal achievable asymptotic
+rate-distortion performance for <m:math><m:mi>D</m:mi></m:math>-dimensional
+<m:math><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:math>-smooth functions <m:math><m:mi>f</m:mi></m:math> (see also
+<link target-id="bid3"/>):
+        <equation id="id2254347">
+          <m:math mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mfenced separators="" open="∥" close="∥">
+                  <m:mi>f</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mover accent="true">
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>R</m:mi>
+                    </m:msub>
+                    <m:mo>^</m:mo>
+                  </m:mover>
+                </m:mfenced>
+                <m:msub>
+                  <m:mi>L</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+              </m:msub>
+              <m:mo>≲</m:mo>
+              <m:msup>
+                <m:mfenced separators="" open="(" close=")">
+                  <m:mfrac>
+                    <m:mn>1</m:mn>
+                    <m:mi>R</m:mi>
+                  </m:mfrac>
+                </m:mfenced>
+                <m:mfrac>
+                  <m:mi>H</m:mi>
+                  <m:mi>D</m:mi>
+                </m:mfrac>
+              </m:msup>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+      Rate-distortion performance measures the complexity of a
+representation and encoding strategy. In the case of transform
+coding, for example, R-D results account for the bits required to
+encode both the values of the significant coefficients <emphasis>and</emphasis>
+their locations. Nonetheless, in many cases transform coding is
+indeed an effective strategy for encoding signals that have sparse
+representations <link target-id="bid4"/>. For example, in <link target-id="bid3"/>
+Cohen et al. propose a wavelet-domain coder that uses a
+connected-tree structure to efficiently encode the positions of
+the significant coefficients and prove that this encoding strategy
+achieves the optimal rate
+        <equation id="id2254455">
+          <m:math mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mfenced separators="" open="∥" close="∥">
+                  <m:mi>f</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mover accent="true">
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>R</m:mi>
+                    </m:msub>
+                    <m:mo>^</m:mo>
+                  </m:mover>
+                </m:mfenced>
+                <m:msub>
+                  <m:mi>L</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+              </m:msub>
+              <m:mo>≲</m:mo>
+              <m:msup>
+                <m:mfenced separators="" open="(" close=")">
+                  <m:mfrac>
+                    <m:mn>1</m:mn>
+                    <m:mi>R</m:mi>
+                  </m:mfrac>
+                </m:mfenced>
+                <m:mfrac>
+                  <m:mi>H</m:mi>
+                  <m:mi>D</m:mi>
+                </m:mfrac>
+              </m:msup>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation></para>
+      </section>
+      <section id="uid3">
+        <title>Compression of piecewise smooth images</title>
+        <para id="id2254535">In some cases, however, the sparsity of the wavelet transform may
+not reflect the true underlying structure of a signal. Examples
+are 2-D piecewise smooth signals with a smooth edge discontinuity
+separating the smooth regions. As we discussed in
+<link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link>, wavelets fail to sparsely represent these
+functions, and so the R-D performance for simple
+thresholding-based coders will suffer as well. In spite of all of
+the benefits of wavelet representations for signal processing (low
+computational complexity, tree structure, sparse approximations
+for smooth signals), this failure to efficiently represent edges
+is a significant drawback. In many images, edges carry some of the
+most prominent and important information <link target-id="bid5"/>, and so
+it is desirable to have a representation well-suited to
+compressing edges in images.</para>
+        <para id="id2254571">To address this concern, recent work in harmonic analysis has
+focused on developing representations that provide sparse
+decompositions for certain geometric image classes. Examples
+include curvelets <link target-id="bid6"/>, <link target-id="bid7"/> and
+contourlets <link target-id="bid8"/>, slightly redundant tight frames
+consisting of anisotropic, “needle-like” atoms.
+In <link target-id="bid9"/>, bandelets are formed by warping an
+orthonormal wavelet basis to conform to the geometrical structure
+in the image. A nonlinear multiscale transform that adapts to
+discontinuities (and can represent a “clean” edge using very few
+coarse scale coefficients) is proposed in <link target-id="bid10"/>.
+Each of these new representations has been shown to achieve
+near-optimal asymptotic approximation and R-D performance for
+piecewise smooth images consisting of <m:math><m:msup><m:mi>C</m:mi><m:mi>H</m:mi></m:msup></m:math> regions
+separated by discontinuities along <m:math><m:msup><m:mi>C</m:mi><m:mi>H</m:mi></m:msup></m:math> curves, with
+<m:math><m:mrow><m:mi>H</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math> (<m:math><m:mrow><m:mi>H</m:mi><m:mo>≥</m:mo><m:mn>2</m:mn></m:mrow></m:math> for bandelets). Some have
+also found use in specialized compression applications such as
+identification photos <link target-id="bid11"/>.</para>
+        <para id="id2254689">In <link target-id="bid100"/>, we have presented a scheme that is based on the simple yet
+powerful observation that geometric features can be efficiently
+approximated using local, geometric atoms in the spatial domain,
+and that the projection of these geometric primitives onto wavelet
+subspaces can therefore approximate the corresponding wavelet
+coefficients. We prove that the resulting dictionary achieves the
+optimal nonlinear approximation rates for piecewise smooth signal
+classes. To account for the added complexity of this encoding
+strategy, we also consider R-D results and prove that this scheme
+comes within a logarithmic factor of the optimal performance rate.
+Unlike the techniques mentioned above, our method also generalizes
+to arbitrary orders of smoothness and arbitrary signal dimension.</para>
+      </section>
+ 
+  </content>
+  <bib:file>
+<bib:entry id="bid100">
+         <bib:article>
+   <!--required fields-->
+           <bib:author>V. Chandrasekaran and M. B. Wakin and D. Baron and R.
+Baraniuk</bib:author>
+           <bib:title>Representation and Compression of Multi-Dimensional
+Piecewise Functions Using Surflets</bib:title>
+           <bib:journal/>
+           <bib:year/>
+   <!--optional fields-->
+           <bib:volume/>
+           <bib:number/>
+           <bib:pages/>
+           <bib:month/>
+           <bib:note>to appear in {\em IEEE Trans. Inf. Theory}, 2008</bib:note>
+         </bib:article>
+       </bib:entry>
+
+
+    <bib:entry id="bid10">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Arandiga, F. and Cohen, A. and Doblas, M. and Donat, R. and Matei, B.</bib:author>
+        <bib:title>Sparse representations of images by edge adapted nonlinear multiscale transforms</bib:title>
+        <bib:booktitle>Proc. IEEE Int. Conf. Image Proc. (ICIP)</bib:booktitle>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>Barcelona, Spain</bib:address>
+        <bib:month>Sept.</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid7">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Donoho, D. L.</bib:author>
+        <bib:title>New tight frames of curvelets and optimal representations of objects with piecewise <!--Math is not currently allowed within BibTeXML.--> singularities</bib:title>
+        <bib:journal>Comm. on Pure and Applied Math.</bib:journal>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume>57</bib:volume>
+        <bib:number/>
+        <bib:pages>219-266</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:incollection>
+<!--required fields-->
+        <bib:author>Candès, E. J. and Donoho, D. L.</bib:author>
+        <bib:title>Curvelets — A suprisingly effective nonadaptive representation for objects with edges</bib:title>
+        <bib:booktitle>Curve and Surface Fitting</bib:booktitle>
+        <bib:publisher>Vanderbilt University Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:editor>Cohen, A. and Rabut, C. and Schumaker, L. L.</bib:editor>
+        <bib:number/>
+        <bib:series/>
+        <bib:type/>
+        <bib:chapter/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:incollection>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Cohen, A. and Dahmen, W. and Daubechies, I. and DeVore, R.</bib:author>
+        <bib:title>Tree Approximation and Optimal Encoding</bib:title>
+        <bib:journal>Appl. Comput. Harmon. Anal.</bib:journal>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:volume>11</bib:volume>
+        <bib:number/>
+        <bib:pages>192-226</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Cohen, A. and Daubechies, I. and Guleryuz, O. G. and Orchard, M. T.</bib:author>
+        <bib:title>On the importance of combining wavelet-based nonlinear approximation with coding strategies</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2002</bib:year>
+<!--optional fields-->
+        <bib:volume>48</bib:volume>
+        <bib:number>7</bib:number>
+        <bib:pages>1895-1921</bib:pages>
+        <bib:month>July</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Clements, G. F.</bib:author>
+        <bib:title>Entropies of Several Sets of Real Valued Functions</bib:title>
+        <bib:journal>Pacific J. Math.</bib:journal>
+        <bib:year>1963</bib:year>
+<!--optional fields-->
+        <bib:volume>13</bib:volume>
+        <bib:number/>
+        <bib:pages>1085-1095</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid8">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Do, M. N. and Vetterli, M.</bib:author>
+        <bib:title>The contourlet transform: An efficient directional multiresolution image representation</bib:title>
+        <bib:journal>IEEE Trans. Image Processing</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Kolmogorov, A. N. and Tihomirov, V. M.</bib:author>
+        <bib:title><!--Math is not currently allowed within BibTeXML.-->-entropy and <!--Math is not currently allowed within BibTeXML.-->-capacity of sets in functional spaces</bib:title>
+        <bib:journal>Amer. Math. Soc. Transl. (Ser. 2)</bib:journal>
+        <bib:year>1961</bib:year>
+<!--optional fields-->
+        <bib:volume>17</bib:volume>
+        <bib:number/>
+        <bib:pages>277-364</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid11">
+      <bib:book>
+<!--required fields-->
+        <bib:editor/>
+        <bib:title>Let it Wave</bib:title>
+        <bib:publisher/>
+        <bib:year/>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address/>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note>www.letitwave.fr</bib:note>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid9">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Le Pennec, E. and Mallat, S.</bib:author>
+        <bib:title>Sparse Geometric Image Representations with Bandelets</bib:title>
+        <bib:journal>IEEE Trans. Image Processing</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume>14</bib:volume>
+        <bib:number>4</bib:number>
+        <bib:pages>423-438</bib:pages>
+        <bib:month>April</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Marr, D.</bib:author>
+        <bib:title>Vision</bib:title>
+        <bib:publisher>W. H. Freeman and Company</bib:publisher>
+        <bib:year>1982</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>San Francisco</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Olshausen, B. and Field, D.</bib:author>
+        <bib:title>Sparse coding with an overcomplete basis set: A strategy employed by V1?</bib:title>
+        <bib:journal>Vision Res.</bib:journal>
+        <bib:year>1997</bib:year>
+<!--optional fields-->
+        <bib:volume>37</bib:volume>
+        <bib:number/>
+        <bib:pages>311-3325</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

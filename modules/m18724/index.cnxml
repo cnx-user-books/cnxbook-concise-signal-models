@@ -1,0 +1,660 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Signal Dictionaries and Representations</title>
+  <metadata>
+  <md:content-id>m18724</md:content-id><md:title>Signal Dictionaries and Representations</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>92e6db22-cd8b-47ee-a336-ffa241e5ee1a</md:uuid>
+</metadata>
+
+<content>
+    
+    
+     
+ <para id="id2253734">For a wide variety of signal processing applications (including
+analysis, compression, noise removal, and so on) it is useful to
+consider the representation of a signal in terms of some
+dictionary <link target-id="bid0"/>. In general, a <emphasis>dictionary</emphasis> 
+<m:math><m:mspace width="2pt"/><m:mi>Ψ</m:mi><m:mspace width="2pt"/></m:math> 
+is
+simply a collection of elements drawn from the signal space whose
+linear combinations can be used to represent or approximate
+signals.</para>
+      <para id="id2253768">Considering, for example, signals in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, we may collect
+and represent the elements of the dictionary <m:math><m:mi>Ψ</m:mi></m:math> as an <m:math><m:mrow><m:mi>N</m:mi><m:mo>×</m:mo><m:mi>Z</m:mi></m:mrow></m:math> matrix, which we also denote as <m:math><m:mi>Ψ</m:mi></m:math>. From
+this dictionary, a signal <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math> can be constructed as
+a linear combination of the elements (columns) of <m:math><m:mi>Ψ</m:mi></m:math>. We write
+<equation id="uid7808868">
+
+        <m:math mode="display">
+          <m:mrow>
+            <m:mi>x</m:mi>
+            <m:mo>=</m:mo>
+            <m:mi>Ψ</m:mi>
+            <m:mi>α</m:mi>
+          </m:mrow>
+        </m:math>
+      </equation>
+for some <m:math><m:mrow><m:mi>α</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>Z</m:mi></m:msup></m:mrow></m:math>. (For much of our notation
+in this section, we concentrate on signals in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, though
+the basic concepts translate to other vector spaces.)</para>
+      
+      
+      <para id="id2253919">Dictionaries appear in a variety of settings. The most common may
+be the basis, in which case <m:math><m:mi>Ψ</m:mi></m:math> has exactly <m:math><m:mi>N</m:mi></m:math> linearly
+independent columns, and each signal <m:math><m:mi>x</m:mi></m:math> has a unique set of
+expansion coefficients <m:math><m:mrow><m:mi>α</m:mi><m:mo>=</m:mo><m:msup><m:mi>Ψ</m:mi><m:mrow><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msup><m:mi>x</m:mi></m:mrow></m:math>. The orthonormal
+basis (where the columns are normalized and orthogonal) is also of
+particular interest, as the unique set of expansion coefficients
+<m:math><m:mrow><m:mi>α</m:mi><m:mo>=</m:mo><m:msup><m:mi>Ψ</m:mi><m:mrow><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:msup><m:mi>x</m:mi><m:mo>=</m:mo><m:msup><m:mi>Ψ</m:mi><m:msup><m:mrow/><m:mi>T</m:mi></m:msup></m:msup><m:mi>x</m:mi></m:mrow></m:math> can be obtained as the
+inner products of <m:math><m:mi>x</m:mi></m:math> against the columns of <m:math><m:mi>Ψ</m:mi></m:math>. That is,
+<m:math><m:mrow><m:mi>α</m:mi><m:mrow><m:mo>(</m:mo><m:mi>i</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:mfenced separators="" open="〈" close="〉"><m:mi>x</m:mi><m:mo>,</m:mo><m:msub><m:mi>ψ</m:mi><m:mi>i</m:mi></m:msub></m:mfenced><m:mo>,</m:mo><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:mi>N</m:mi></m:mrow></m:math>, which gives us
+the expansion</para>
+      <equation id="id2253078"><m:math mode="display">
+          <m:mrow>
+            <m:mi>x</m:mi>
+            <m:mo>=</m:mo>
+            <m:munderover>
+<m:mrow>
+              <m:mo>∑</m:mo>
+</m:mrow>        
+      <m:mrow>
+                <m:mi>i</m:mi>
+                <m:mo>=</m:mo>
+                <m:mn>1</m:mn>
+              </m:mrow>
+              <m:mi>N</m:mi>
+            </m:munderover>
+            <m:mfenced separators="" open="〈" close="〉">
+              <m:mi>x</m:mi>
+              <m:mo>,</m:mo>
+              <m:msub>
+                <m:mi>ψ</m:mi>
+                <m:mi>i</m:mi>
+              </m:msub>
+            </m:mfenced>
+            <m:msub>
+              <m:mi>ψ</m:mi>
+              <m:mi>i</m:mi>
+            </m:msub>
+            <m:mo>.</m:mo>
+          </m:mrow>
+        </m:math>
+      </equation>
+      <para id="id2254400">We also have that <m:math><m:mrow><m:msubsup><m:mfenced open="∥" close="∥"><m:mi>x</m:mi></m:mfenced><m:mn>2</m:mn><m:mn>2</m:mn></m:msubsup><m:mo>=</m:mo><m:msubsup><m:mo>∑</m:mo><m:mrow><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow><m:mi>N</m:mi></m:msubsup><m:msup><m:mfenced separators="" open="〈" close="〉"><m:mi>x</m:mi><m:mo>,</m:mo><m:msub><m:mi>ψ</m:mi><m:mi>i</m:mi></m:msub></m:mfenced><m:mn>2</m:mn></m:msup></m:mrow></m:math>.</para>
+      <para id="id2254473">Frames are another special type of dictionary <link target-id="bid1"/>. A
+dictionary <m:math><m:mi>Ψ</m:mi></m:math> is a frame if there exist numbers <m:math><m:mi>A</m:mi></m:math> and <m:math><m:mi>B</m:mi></m:math>,
+<m:math><m:mrow><m:mn>0</m:mn><m:mo>&lt;</m:mo><m:mi>A</m:mi><m:mo>≤</m:mo><m:mi>B</m:mi><m:mo>&lt;</m:mo><m:mi>∞</m:mi></m:mrow></m:math> such that, for any signal <m:math><m:mi>x</m:mi></m:math>
+<equation id="uid2352"><m:math mode="display">
+          <m:mrow>
+            <m:mi>A</m:mi>
+            <m:msubsup>
+              <m:mfenced open="∥" close="∥">
+                <m:mi>x</m:mi>
+              </m:mfenced>
+              <m:mn>2</m:mn>
+              <m:mn>2</m:mn>
+            </m:msubsup>
+            <m:mo>≤</m:mo>
+            <m:munder>
+<m:mrow>
+             <m:mo>∑</m:mo>
+</m:mrow>
+<m:mrow>       
+       <m:mi>z</m:mi>
+</m:mrow>        
+    </m:munder>
+            <m:msup>
+              <m:mfenced separators="" open="〈" close="〉">
+                <m:mi>x</m:mi>
+                <m:mo>,</m:mo>
+                <m:msub>
+                  <m:mi>ψ</m:mi>
+                  <m:mi>z</m:mi>
+                </m:msub>
+              </m:mfenced>
+              <m:mn>2</m:mn>
+            </m:msup>
+            <m:mo>≤</m:mo>
+            <m:mi>B</m:mi>
+            <m:msubsup>
+              <m:mfenced open="∥" close="∥">
+                <m:mi>x</m:mi>
+              </m:mfenced>
+              <m:mn>2</m:mn>
+              <m:mn>2</m:mn>
+            </m:msubsup>
+            <m:mo>.</m:mo>
+          </m:mrow>
+        </m:math>
+      </equation>
+
+The elements of a frame may be linearly dependent in general (see
+<link target-id="uid1"/>), and so there may exist many ways to
+express a particular signal among the dictionary elements.
+However, frames do have a useful analysis/synthesis duality: for
+any frame <m:math><m:mi>Ψ</m:mi></m:math> there exists a dual frame <m:math><m:mover accent="true"><m:mi>Ψ</m:mi><m:mo>˜</m:mo></m:mover></m:math> such
+that
+<equation id="uid98298235">
+        <m:math mode="display">
+          <m:mrow>
+            <m:mi>x</m:mi>
+            <m:mo>=</m:mo>
+            <m:munder>
+<m:mrow>
+              <m:mo>∑</m:mo>
+</m:mrow>
+<m:mrow>        
+      <m:mi>z</m:mi>
+</m:mrow>        
+    </m:munder>
+            <m:mfenced separators="" open="〈" close="〉">
+              <m:mi>x</m:mi>
+              <m:mo>,</m:mo>
+              <m:msub>
+                <m:mi>ψ</m:mi>
+                <m:mi>z</m:mi>
+              </m:msub>
+            </m:mfenced>
+            <m:msub>
+              <m:mover accent="true">
+                <m:mi>ψ</m:mi>
+                <m:mo>˜</m:mo>
+              </m:mover>
+              <m:mi>z</m:mi>
+            </m:msub>
+            <m:mo>=</m:mo>
+            <m:munder>
+<m:mrow>         
+     <m:mo>∑</m:mo>
+</m:mrow>
+<m:mrow>        
+      <m:mi>z</m:mi>
+</m:mrow> 
+           </m:munder>
+            <m:mfenced separators="" open="〈" close="〉">
+              <m:mi>x</m:mi>
+              <m:mo>,</m:mo>
+              <m:msub>
+                <m:mover accent="true">
+                  <m:mi>ψ</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mi>z</m:mi>
+              </m:msub>
+            </m:mfenced>
+            <m:msub>
+              <m:mi>ψ</m:mi>
+              <m:mi>z</m:mi>
+            </m:msub>
+            <m:mo>.</m:mo>
+          </m:mrow>
+        </m:math>
+      </equation>
+
+In the case where the frame vectors are represented as columns of the <m:math><m:mi>N</m:mi></m:math> x <m:math><m:mi>Z</m:mi></m:math> matrix <m:math><m:mi>Ψ</m:mi></m:math>, the matrix <m:math><m:mover accent="true"><m:mi>Ψ</m:mi><m:mo>˜</m:mo></m:mover></m:math> containing the dual frame elements is simply the transpose of the pseudoinverse of <m:math><m:mi>Ψ</m:mi></m:math>.
+
+A frame is called <emphasis>tight</emphasis> if the frame bounds <m:math><m:mi>A</m:mi></m:math> and <m:math><m:mi>B</m:mi></m:math> are
+equal. Tight frames have the special properties of (i) being their
+own dual frames (after a rescaling by <m:math><m:mrow><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>A</m:mi></m:mrow></m:math>) and (ii) preserving
+norms, i.e., <m:math><m:mrow><m:msubsup><m:mo>∑</m:mo><m:mrow><m:mi>i</m:mi><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow><m:mi>N</m:mi></m:msubsup><m:msup><m:mfenced separators="" open="〈" close="〉"><m:mi>x</m:mi><m:mo>,</m:mo><m:msub><m:mi>ψ</m:mi><m:mi>i</m:mi></m:msub></m:mfenced><m:mn>2</m:mn></m:msup><m:mo>=</m:mo><m:mi>A</m:mi><m:msubsup><m:mfenced open="∥" close="∥"><m:mi>x</m:mi></m:mfenced><m:mn>2</m:mn><m:mn>2</m:mn></m:msubsup></m:mrow></m:math>.
+The remainder of this section discusses several important
+dictionaries.</para>
+      
+      
+      
+      
+      <figure id="uid1" orient="horizontal"><media id="id11238928" alt=""><image src="../../media/mbFrame-fc96.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrame.eps" mime-type="application/postscript" print-width="2in"/></media>
+        
+      <caption>A simple, redundant frame <m:math><m:mi>Ψ</m:mi></m:math> containing three vectors that
+span <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>2</m:mn></m:msup></m:math>.
+
+</caption></figure>
+      <section id="uid2">
+        <title>The canonical basis</title>
+        <para id="id2254922">The standard basis for representing a signal is the canonical (or
+“spike”) basis. In <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, this corresponds to a
+dictionary <m:math><m:mrow><m:mi>Ψ</m:mi><m:mo>=</m:mo><m:msub><m:mi>I</m:mi><m:mi>N</m:mi></m:msub></m:mrow></m:math> (the <m:math><m:mrow><m:mi>N</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> identity matrix).
+When expressed in the canonical basis, signals are often said to
+be in the “time domain.”</para>
+      </section>
+      <section id="uid3">
+        <title>Fourier dictionaries</title>
+        <para id="id2254989">The frequency domain provides one alternative representation to
+the time domain. The Fourier series and discrete Fourier transform
+are obtained by letting <m:math><m:mi>Ψ</m:mi></m:math> contain complex exponentials and
+allowing the expansion coefficients <m:math><m:mi>α</m:mi></m:math> to be complex as
+well. (Such a dictionary can be used to represent real or complex
+signals.) A related “harmonic” transform to express signals in
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> is the discrete cosine transform (DCT), in which
+<m:math><m:mi>Ψ</m:mi></m:math> contains real-valued, approximately sinusoidal functions
+and the coefficients <m:math><m:mi>α</m:mi></m:math> are real-valued as well.</para>
+      </section>
+      <section id="uid4"><title>Wavelets</title><para id="id2255062">Closely related to the Fourier transform, wavelets provide a
+framework for localized harmonic analysis of a
+signal <link target-id="bid0"/>. Elements of the discrete wavelet dictionary
+are local, oscillatory functions concentrated approximately on
+dyadic supports and appear at a discrete collection of scales,
+locations, and (if the signal dimension <m:math><m:mrow><m:mi>D</m:mi><m:mo>&gt;</m:mo><m:mn>1</m:mn></m:mrow></m:math>)
+orientations.</para>
+
+<section id="eip-949"><title>Scale</title><para id="eip-id21166507">In wavelet analysis and other settings, we will frequently refer to a particular <emphasis>scale</emphasis> of analysis
+for a signal.  Consider, for example, continuous-time functions <m:math><m:mi>f</m:mi></m:math> defined over
+the domain <m:math><m:mrow><m:mi mathvariant="script">D</m:mi><m:mo>=</m:mo><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mi>D</m:mi></m:msup></m:mrow></m:math>. A <emphasis>dyadic
+hypercube</emphasis> <m:math><m:mspace width="3pt"/><m:mrow><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub><m:mo>⊆</m:mo><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mi>D</m:mi></m:msup></m:mrow></m:math> at scale <m:math><m:mrow><m:mi>j</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">N</m:mi></m:mrow></m:math> is a domain that satisfies
+
+<equation id="uid892348986723">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mi>X</m:mi>
+                <m:mi>j</m:mi>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:mrow>
+                <m:mo>[</m:mo>
+                <m:msub>
+                  <m:mi>β</m:mi>
+                  <m:mn>1</m:mn>
+                </m:msub>
+                <m:msup>
+                  <m:mn>2</m:mn>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mi>j</m:mi>
+                  </m:mrow>
+                </m:msup>
+                <m:mo>,</m:mo>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:msub>
+                    <m:mi>β</m:mi>
+                    <m:mn>1</m:mn>
+                  </m:msub>
+                  <m:mo>+</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:msup>
+                  <m:mn>2</m:mn>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mi>j</m:mi>
+                  </m:mrow>
+                </m:msup>
+                <m:mo>]</m:mo>
+              </m:mrow>
+              <m:mo>×</m:mo>
+              <m:mo>⋯</m:mo>
+              <m:mo>×</m:mo>
+              <m:mrow>
+                <m:mo>[</m:mo>
+                <m:msub>
+                  <m:mi>β</m:mi>
+                  <m:mi>D</m:mi>
+                </m:msub>
+                <m:msup>
+                  <m:mn>2</m:mn>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mi>j</m:mi>
+                  </m:mrow>
+                </m:msup>
+                <m:mo>,</m:mo>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:msub>
+                    <m:mi>β</m:mi>
+                    <m:mi>D</m:mi>
+                  </m:msub>
+                  <m:mo>+</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:msup>
+                  <m:mn>2</m:mn>
+                  <m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mi>j</m:mi>
+                  </m:mrow>
+                </m:msup>
+                <m:mo>]</m:mo>
+              </m:mrow>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+
+
+
+
+with <m:math><m:mrow><m:msub><m:mi>β</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>β</m:mi><m:mn>2</m:mn></m:msub><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:msub><m:mi>β</m:mi><m:mi>D</m:mi></m:msub><m:mo>∈</m:mo><m:mrow><m:mo>{</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:msup><m:mn>2</m:mn><m:mi>j</m:mi></m:msup><m:mo>-</m:mo><m:mn>1</m:mn><m:mo>}</m:mo></m:mrow></m:mrow></m:math>. We call <m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math> a <emphasis>dyadic interval</emphasis> when
+<m:math><m:mrow><m:mi>D</m:mi><m:mo>=</m:mo><m:mn>1</m:mn></m:mrow></m:math> or a <emphasis>dyadic square</emphasis> when <m:math><m:mrow><m:mi>D</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math> (see
+<link target-id="uid9"/>). Note that <m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math> has sidelength
+<m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi></m:mrow></m:msup></m:math>. </para>
+                
+        <figure id="uid9" orient="horizontal"><media id="id1163710832723" alt=""><image src="../../media/dyadic-a4a4.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/dyadic.eps" mime-type="application/postscript" print-width="3in"/></media>
+          
+        <caption>Dyadic
+partitioning of the unit square at scales <m:math><m:mrow><m:mi>j</m:mi><m:mo>=</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn></m:mrow></m:math>. The
+partitioning induces a coarse-to-fine parent/child relationship
+that can be modeled using a tree structure.
+
+</caption></figure>
+<para id="eip-id21164814">For discrete-time functions the notion of scale is similar. We can
+imagine, for example, a “voxelization” of the domain
+<m:math><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mi>D</m:mi></m:msup></m:math> (“pixelization” when <m:math><m:mrow><m:mi>D</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>), where each
+voxel has sidelength <m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mo>-</m:mo><m:mi>B</m:mi></m:mrow></m:msup></m:math>, <m:math><m:mrow><m:mi>B</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">N</m:mi></m:mrow></m:math>, and it takes
+<m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mi>B</m:mi><m:mi>D</m:mi></m:mrow></m:msup></m:math> voxels to fill <m:math><m:msup><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow><m:mi>D</m:mi></m:msup></m:math>. The relevant scales
+of analysis for such a signal would simply be <m:math><m:mrow><m:mi>j</m:mi><m:mo>=</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mo>⋯</m:mo><m:mo>,</m:mo><m:mi>B</m:mi></m:mrow></m:math>,
+and each dyadic hypercube <m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math> would refer to a collection of
+voxels.
+</para>
+
+</section>
+
+<section id="eip-360"><title>Wavelet fundamentals</title><para id="id2255092">The wavelet transform offers a multiscale decomposition of a
+function into a nested sequence of scaling spaces <m:math><m:mrow><m:msub><m:mi>V</m:mi><m:mn>0</m:mn></m:msub><m:mo>⊂</m:mo><m:msub><m:mi>V</m:mi><m:mn>1</m:mn></m:msub><m:mo>⊂</m:mo><m:mo>⋯</m:mo><m:mo>⊂</m:mo><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub><m:mo>⊂</m:mo><m:mo>⋯</m:mo></m:mrow></m:math>. Each scaling space <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math> is
+spanned by a discrete collection of dyadic translations of a
+lowpass scaling function <m:math><m:msub><m:mi>ϕ</m:mi><m:mi>j</m:mi></m:msub></m:math>, and the difference between adjacent
+scaling spaces <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math> and <m:math><m:msub><m:mi>V</m:mi><m:mrow><m:mi>j</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub></m:math> is spanned by a discrete collection of dyadic translations of a
+bandpass wavelet function <m:math><m:msub><m:mi>ψ</m:mi><m:mi>j</m:mi></m:msub></m:math>. <link target-id="fs-id1170622520709"/> shows an example of this multiscale organization in the case of the Haar wavelet dictionary. Each wavelet function at
+scale <m:math><m:mi>j</m:mi></m:math> is concentrated approximately on some dyadic hypercube
+<m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math>, and between scales, both the wavelets and scaling functions
+are “self-similar,” differing only by rescaling and dyadic
+dilation. When <m:math><m:mrow><m:mi>D</m:mi><m:mo>&gt;</m:mo><m:mn>1</m:mn></m:mrow></m:math>, the difference spaces are
+partitioned into <m:math><m:mrow><m:msup><m:mn>2</m:mn><m:mi>D</m:mi></m:msup><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:math> distinct orientations (when
+<m:math><m:mrow><m:mi>D</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math> these correspond to vertical, horizontal, and
+diagonal directions). The wavelet transform can be truncated at
+any scale <m:math><m:mi>j</m:mi></m:math>. We then let the basis <m:math><m:mi>Ψ</m:mi></m:math> consist of all scaling
+functions at scale <m:math><m:mi>j</m:mi></m:math> plus all wavelets at scales <m:math><m:mi>j</m:mi></m:math> and finer. </para>
+
+  <figure id="fs-id1170622520709" orient="vertical"><subfigure id="fs-id1170623652066">
+            <media id="fs-id1170629634759" alt=""><image src="../../media/wavelet spaces - 2.png" mime-type="image/png" width="600"/><image for="pdf" src="../../media/wavelet spaces - 2 - hi.png" mime-type="image/png" width="6in"/></media>
+          </subfigure>
+          <subfigure id="fs-id1170631745205">
+            <media id="fs-id1170628151577" alt=""><image src="../../media/wavelet spaces - 2b.png" mime-type="image/png" width="600"/><image for="pdf" src="../../media/wavelet spaces - 2b - hi.png" mime-type="image/png" width="6in"/></media>
+          </subfigure>
+          <subfigure id="fs-id1170619320884">
+            <media id="fs-id1170626993922" alt=""><image src="../../media/wavelet spaces - 2c.png" mime-type="image/png" width="600"/><image for="pdf" src="../../media/wavelet spaces - 2c - hi.png" mime-type="image/png" width="6in"/></media>
+          </subfigure>
+          <subfigure id="eip-id14149369">
+            <media id="eip-id14149371" alt=""><image src="../../media/wavelet spaces - 2f.png" mime-type="image/png" width="522"/><image for="pdf" src="../../media/wavelet spaces - 2f - hi.png" mime-type="image/png" width="5in"/></media>
+          </subfigure>
+
+<caption>Multiscale wavelet representations on the interval <m:math><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow></m:math>. (a) Haar scaling functions spanning <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math> with <m:math><m:mrow><m:mi>j</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>. (b) Haar wavelet functions spanning the difference space between <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math> and <m:math><m:msub><m:mi>V</m:mi><m:mrow><m:mi>j</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub></m:math>. (c) Haar scaling functions spanning <m:math><m:msub><m:mi>V</m:mi><m:mrow><m:mi>j</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub></m:math>. (d) Two example functions belonging to the spaces (left) <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math> and (right) <m:math><m:msub><m:mi>V</m:mi><m:mrow><m:mi>j</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:msub></m:math>.
+</caption></figure>
+
+        <para id="id2255320">Wavelets are essentially bandpass functions that detect abrupt
+changes in a signal. The scale of a wavelet, which controls its
+support both in time and in frequency, also controls its
+sensitivity to changes in the signal. This is made more precise by
+considering the wavelet analysis of smooth signals. Wavelet are
+often characterized by their number of <emphasis>vanishing moments</emphasis>; a
+wavelet basis function is said to have <m:math><m:mi>H</m:mi></m:math> vanishing
+moments if it is orthogonal to (its inner product is zero against)
+any <m:math><m:mi>H</m:mi></m:math>-degree polynomial. <link document="m18726" target-id="uid3">Sparse (Nonlinear) models</link><!--section 2.4.2-->
+discusses further the wavelet analysis of smooth and piecewise
+smooth signals.</para>
+        <para id="id2255360">The dyadic organization of the wavelet transform lends itself to a
+multiscale, tree-structured organization of the wavelet
+coefficients. Each “parent” function, concentrated on a dyadic
+hypercube <m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math> of sidelength <m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi></m:mrow></m:msup></m:math>, has <m:math><m:msup><m:mn>2</m:mn><m:mi>D</m:mi></m:msup></m:math>
+“children” whose supports are concentrated on the dyadic
+subdivisions of <m:math><m:msub><m:mi>X</m:mi><m:mi>j</m:mi></m:msub></m:math>. This relationship can be represented in a
+top-down tree structure, as demonstrated in <link target-id="uid9"/>. Because the parent and children share a
+location, they will presumably measure related phenomena about the
+signal, and so in general, any patterns in their wavelet
+coefficients tend to be reflected in the connectivity of the tree
+structure. <link target-id="fs-id6123584"/> and <link target-id="fs-id1171759399652"/> show an example of the wavelet transform applied to the Cameraman test image; since the dimension <m:math><m:mrow><m:mi>D</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>, each scale is partitioned into vertical, horizontal, and diagonal wavelet analysis, and each parent coefficient has <m:math><m:msup><m:mn>2</m:mn><m:mi>D</m:mi></m:msup><m:mo>=</m:mo><m:mn>4</m:mn></m:math> children.</para>
+
+   <figure id="fs-id6123584" orient="horizontal"><media id="fs-id1170629534000" alt=""><image src="../../media/cameraOrig.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraOrig.eps" mime-type="application/postscript" print-width="2.5in"/></media>
+              <caption>Cameraman test image (size <m:math><m:mn>256</m:mn><m:mo>×</m:mo><m:mn>256</m:mn></m:math>) for use in wavelet decomposition and approximation examples.</caption></figure>
+
+  <figure id="fs-id1171759399652" orient="vertical"><subfigure id="fs-id1171788775286"><media id="fs-id1171762287111" alt=""><image src="../../media/cameraCoeffs1.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraCoeffs1.eps" mime-type="application/postscript" print-width="2.5in"/></media></subfigure>
+<subfigure id="fs-id1171789756780"><media id="fs-id1171778542689" alt=""><image src="../../media/cameraCoeffs3.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraCoeffs3.eps" mime-type="application/postscript" print-width="2.5in"/></media></subfigure>
+<caption>Wavelet analysis of the Cameraman test image. (a) One-level wavelet transform, where the <m:math><m:mi>N</m:mi></m:math>-pixel image is transformed into four sets of <m:math><m:mi>N</m:mi><m:mo>/</m:mo><m:mn>4</m:mn></m:math> coefficients each. The top left quadrant represents the scaling coefficients at the next coarser scale (relative to the scale of pixelization). The remaining quadrants represent the wavelet coefficients from the difference spaces, partitioned into the vertical, horizontal, and diagonal subbands. (b) Three-level wavelet transform, where the wavelet decomposition has been iterated twice more on the scaling coefficients. The multiple scales of wavelet coefficients exhibit a parent-child dependency. The largest coefficients tend to concentrate at the coarsest scales and around high-frequency features such as edges in the image.
+</caption></figure>
+
+
+
+        <para id="id2255438">In addition to their ease of modeling, wavelets are
+computationally attractive for signal processing; using a filter
+bank, the wavelet transform of an <m:math><m:mi>N</m:mi></m:math>-voxel signal can be
+computed in just <m:math><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math> operations.</para></section>
+
+
+      </section>
+      <section id="uid5">
+        <title>Other dictionaries</title>
+        <para id="id2255478">A wide variety of other dictionaries have been proposed in signal
+processing and harmonic analysis. As one example, complex-valued
+wavelet transforms have proven useful for image analysis and
+modeling <link target-id="bid2"/>, <link target-id="bid3"/>, <link target-id="bid4"/>, <link target-id="bid5"/>, <link target-id="bid6"/>, <link target-id="bid7"/>, <link target-id="bid8"/>,
+thanks to a phase component that captures location information at
+each scale. Just a few of the other harmonic dictionaries popular
+in image processing include wavelet packets <link target-id="bid0"/>, Gabor
+atoms <link target-id="bid0"/>, curvelets <link target-id="bid9"/>, <link target-id="bid10"/>, and
+contourlets <link target-id="bid11"/>, <link target-id="bid12"/>, all of which involve various
+space-frequency partitions. We mention additional dictionaries in
+<link document="m18729">Compression</link> <!--Section 2.6--> .</para>
+      </section>
+   
+  </content>
+  <bib:file>
+    <bib:entry id="bid10">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Donoho, D. L.</bib:author>
+        <bib:title>New tight frames of curvelets and optimal representations of objects with piecewise <!--Math is not currently allowed within BibTeXML.--> singularities</bib:title>
+        <bib:journal>Comm. on Pure and Applied Math.</bib:journal>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume>57</bib:volume>
+        <bib:number/>
+        <bib:pages>219–266</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid9">
+      <bib:incollection>
+<!--required fields-->
+        <bib:author>Candès, E. J. and Donoho, D. L.</bib:author>
+        <bib:title>Curvelets — A suprisingly effective nonadaptive representation for objects with edges</bib:title>
+        <bib:booktitle>Curve and Surface Fitting</bib:booktitle>
+        <bib:publisher>Vanderbilt University Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:editor>Cohen, A. and Rabut, C. and Schumaker, L. L.</bib:editor>
+        <bib:number/>
+        <bib:series/>
+        <bib:type/>
+        <bib:chapter/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:incollection>
+    </bib:entry>
+    <bib:entry id="bid11">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Do, M. N. and Vetterli, M.</bib:author>
+        <bib:title>Contourlets: A directional multiresolution image representation</bib:title>
+        <bib:booktitle>Proc. IEEE Int. Conf. Image Proc. (ICIP)</bib:booktitle>
+        <bib:year>2002</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>Rochester, New York</bib:address>
+        <bib:month>Oct.</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid12">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Do, M. N. and Vetterli, M.</bib:author>
+        <bib:title>The contourlet transform: An efficient directional multiresolution image representation</bib:title>
+        <bib:journal>IEEE Trans. Image Processing</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Fernandes, F. C. A. and van Spaendonck, R. L. C. and Burrus, C. S.</bib:author>
+        <bib:title>A New Framework for Complex Wavelet Transforms</bib:title>
+        <bib:journal>IEEE Trans. Signal Processing</bib:journal>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month>July</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid8">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Fernandes, F. C. A. and Wakin, M. B. and Baraniuk, R. G.</bib:author>
+        <bib:title>Non-Redundant, Linear-Phase, Semi-Orthogonal, Directional Complex Wavelets</bib:title>
+        <bib:booktitle>Proc. Int. Conf. Acoustics, Speech, Signal Processing (ICASSP)</bib:booktitle>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>Montreal, Quebec, Canada</bib:address>
+        <bib:month>May</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Kovačević, J. and Chebira, A.</bib:author>
+        <bib:title>Life Beyond Bases: The Advent of Frames</bib:title>
+        <bib:journal/>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Kingsbury, N.</bib:author>
+        <bib:title>Complex wavelets for shift invariant analysis and filtering of signals</bib:title>
+        <bib:journal>Appl. Comp. Harm. Anal.</bib:journal>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:volume>10</bib:volume>
+        <bib:number/>
+        <bib:pages>234-253</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Kingsbury, N.</bib:author>
+        <bib:title>Image processing with complex wavelets</bib:title>
+        <bib:journal>Phil. Trans. R. Soc. Lond. A</bib:journal>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:volume>357</bib:volume>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month>Sept.</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Mallat, S.</bib:author>
+        <bib:title>A wavelet tour of signal processing</bib:title>
+        <bib:publisher>Academic Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>San Diego, CA, USA</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid7">
+      <bib:techreport>
+<!--required fields-->
+        <bib:author>Orchard, M. T. and Ates, H.</bib:author>
+        <bib:title>Equiripple design of real and complex filter banks</bib:title>
+        <bib:institution>Rice University</bib:institution>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:type>Technical report</bib:type>
+        <bib:number/>
+        <bib:address/>
+        <bib:month/>
+        <bib:note/>
+      </bib:techreport>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Selesnick, I. W.</bib:author>
+        <bib:title>The design of approximate Hilbert transform pairs of wavelet bases</bib:title>
+        <bib:journal>IEEE Trans. Signal Processing</bib:journal>
+        <bib:year>2002</bib:year>
+<!--optional fields-->
+        <bib:volume>50</bib:volume>
+        <bib:number>5</bib:number>
+        <bib:pages/>
+        <bib:month>May</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>van Spaendonck, R. and Blu, T. and Baraniuk, R. and Vetterli, M.</bib:author>
+        <bib:title>Orthogonal Hilbert Transform Filter Banks and Wavelets</bib:title>
+        <bib:booktitle>Proc. Int. Conf. Acoustics, Speech, Signal Processing (ICASSP)</bib:booktitle>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+  </bib:file>
+</document>

@@ -1,0 +1,1335 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Approximation</title>
+  <metadata>
+  <md:content-id>m18727</md:content-id><md:title>Approximation</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>dcdade4c-4184-4688-b03d-863cb63e0fff</md:uuid>
+</metadata>
+
+<content>
+    
+      <para id="id2253734">To this point, we have discussed signal representations and models
+as basic tools for signal processing. In the following modules, we discuss the actual application of these tools to tasks
+such as approximation and compression, and we continue to discuss
+the geometric implications.</para>
+      <section id="uid1">
+        <title>Linear approximation</title>
+        <para id="id2253749">One common prototypical problem in signal processing is to find
+the best linear approximation to a signal <m:math><m:mi>x</m:mi></m:math>. By “best linear
+approximation,” we mean the best approximation to <m:math><m:mi>x</m:mi></m:math> from among
+a class of signals comprising a linear (or affine) subspace. This
+situation may arise, for example, when we have a noisy observation
+of a signal believed to obey a linear model. If we choose an
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mn>2</m:mn></m:msub></m:math> error criterion, the solution to this optimization
+problem has a particularly strong geometric interpretation.</para>
+        <para id="id2253796">To be more concrete, suppose <m:math><m:mi>S</m:mi></m:math> is a <m:math><m:mi>K</m:mi></m:math>-dimensional
+linear subspace of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>. (The case of an affine subspace
+follows similarly.) If we seek
+
+<equation id="uid97869234">
+          <m:math mode="display">
+            <m:mrow>
+              <m:msup>
+                <m:mi>s</m:mi>
+                <m:mo>*</m:mo>
+              </m:msup>
+              <m:mo>:</m:mo>
+              <m:mo>=</m:mo>
+              <m:mo form="prefix">arg</m:mo>
+              <m:munder>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:mrow>
+                  <m:mi>s</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:mi>S</m:mi>
+                </m:mrow>
+              </m:munder>
+              <m:msub>
+                <m:mfenced separators="" open="∥" close="∥">
+                  <m:mi>s</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>x</m:mi>
+                </m:mfenced>
+                <m:mn>2</m:mn>
+              </m:msub>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+standard linear algebra results state that the minimizer is given
+by
+
+<equation id="uid980982340">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:msup>
+                <m:mi>s</m:mi>
+                <m:mo>*</m:mo>
+              </m:msup>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mi>A</m:mi>
+                <m:msup>
+                  <m:mrow/>
+                  <m:mi>T</m:mi>
+                </m:msup>
+              </m:msup>
+              <m:mi>A</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+where <m:math><m:mi>A</m:mi></m:math> is a <m:math><m:mrow><m:mi>K</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix whose rows form an
+orthonormal basis for <m:math><m:mi>S</m:mi></m:math>. Geometrically, one can easily see that
+this solution corresponds to an orthogonal projection of <m:math><m:mi>x</m:mi></m:math> onto
+the subspace <m:math><m:mi>S</m:mi></m:math> (see <link target-id="uid3"/>(a)).</para>
+        
+        
+        
+        
+        <figure id="uid3" orient="vertical"><subfigure id="id2253050">
+            <media id="id4921018" alt=""><image src="../../media/mbFrameLAdists.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameLAdists.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure>
+<subfigure id="id2253056">
+            <media id="id5023882" alt=""><image src="../../media/mbFrameNLAdists.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameNLAdists.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure>
+<subfigure id="id2253063">
+            <media id="id5023912" alt=""><image src="../../media/mbFrameManifolddists.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameManifolddists.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure><caption>Approximating a signal <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>2</m:mn></m:msup></m:mrow></m:math> with an <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>2</m:mn></m:msub></m:math> error
+criterion. (a) Linear approximation using one element of the
+dictionary <m:math><m:mi>Ψ</m:mi></m:math> corresponds to orthogonal projection of the signal onto the linear subspace. (b) Nonlinear approximation corresponds to orthogonal projection of the signal onto the nearest candidate subspace. In this case, we choose the best 1-sparse signal that can be built using <m:math><m:mi>Ψ</m:mi></m:math>.
+(c) Manifold-based approximation, finding the nearest point on
+<m:math><m:mi mathvariant="script">M</m:mi></m:math>.
+
+</caption></figure>
+        <para id="id2253070">The linear approximation problem arises frequently in settings
+involving signal dictionaries. In some settings, such as the case
+of an oversampled bandlimited signal, certain coefficients in the
+vector <m:math><m:mi>α</m:mi></m:math> may be assumed to be fixed at zero. In the case
+where the dictionary <m:math><m:mi>Ψ</m:mi></m:math> forms an orthonormal basis, the linear
+approximation estimate of the unknown coefficients has a
+particularly simple form: rows of the matrix <m:math><m:mi>A</m:mi></m:math> in
+<link target-id="uid980982340"/> are obtained by selecting and transposing the
+columns of <m:math><m:mi>Ψ</m:mi></m:math> whose expansion coefficients are unknown, and
+consequently, the unknown coefficients can be estimated simply by
+taking the inner products of <m:math><m:mi>x</m:mi></m:math> against the appropriate columns
+of <m:math><m:mi>Ψ</m:mi></m:math>.</para>
+        <para id="id2254433">For example, in choosing a fixed subset of the Fourier or wavelet
+dictionaries, one may rightfully choose the lowest frequency
+(coarsest scale) basis functions for the set <m:math><m:mi>S</m:mi></m:math> because, as
+discussed in <link document="m18726" target-id="uid1">Linear Models from Low-Dimensional Signal Models</link> <!--Section 2.4.1-->, the coefficients
+generally tend to decay at higher frequencies (finer scales). For
+smooth functions, this strategy is appropriate and effective;
+functions in Sobolev smoothness spaces are well-approximated using
+linear approximations from the Fourier or wavelet
+dictionaries <link target-id="bid0"/>.
+For piecewise smooth functions, however, even the wavelet-domain
+linear approximation strategy would miss out on significant
+coefficients at fine scales. Since the locations of such
+coefficients are unknown a priority, it is impossible to propose a
+linear wavelet-domain approximation scheme that could
+simultaneously capture all piecewise smooth signals. As an example, <link target-id="fs-id1169211320066"/>(a) shows the linear approximation of the Cameraman test image obtained by keeping only the lowest-frequency scaling and wavelet coefficients. No high-frequency information is available to clearly represent features such as edges.</para>
+
+        <figure id="fs-id1169211320066" orient="vertical"><subfigure id="fs-id1169211416817">
+            <media id="fs-id1169211023698" alt=""><image src="../../media/cameraLinear.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraLinear.eps" mime-type="application/postscript" print-width="2.5in"/></media>          </subfigure>
+<subfigure id="fs-id1169211057910">
+            <media id="fs-id1169208961064" alt=""><image src="../../media/cameraNonlinear.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraNonlinear.eps" mime-type="application/postscript" print-width="2.5in"/></media>          </subfigure>
+<caption>Linear versus nonlinear approximation in the wavelet domain. (a) Linear approximation of the Cameraman test image obtained by keeping the <m:math><m:mi>K</m:mi><m:mo>=</m:mo><m:mn>4096</m:mn></m:math> lowest-frequency wavelet coefficients from the five-level wavelet decomposition. The MSE with respect to the original image is <m:math><m:mn>353</m:mn></m:math>. (b) Nonlinear approximation of the Cameraman test image obtained by keeping the <m:math><m:mi>K</m:mi><m:mo>=</m:mo><m:mn>4096</m:mn></m:math> largest wavelet coefficients from the five-level wavelet decomposition. The MSE with respect to the original image is <m:math><m:mn>72</m:mn></m:math>. Compared with linear approximation, more high frequency coefficients are included, which allows better representation of features such as edges.</caption></figure>
+
+      </section>
+      <section id="uid4">
+        <title>Nonlinear approximation</title>
+        <para id="id2254480">A related question often arises in settings involving signal
+dictionaries. Rather than finding the best approximation to a
+signal <m:math><m:mi>f</m:mi></m:math> using a fixed collection of <m:math><m:mi>K</m:mi></m:math> elements from
+the dictionary <m:math><m:mi>Ψ</m:mi></m:math>, one may often seek the best
+<m:math><m:mi>K</m:mi></m:math>-term representation to <m:math><m:mi>f</m:mi></m:math> among all possible
+expansions that use <m:math><m:mi>K</m:mi></m:math> terms from the dictionary.
+Compared to linear approximation, this type of nonlinear
+approximation <link target-id="bid1"/>, <link target-id="bid2"/> utilizes the ability of
+the dictionary to adapt: different elements may be important for
+representing different signals.</para>
+        <para id="id2254556">The <m:math><m:mi>K</m:mi></m:math>-term nonlinear approximation problem corresponds
+to the optimization
+<equation id="uid5">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:msubsup>
+                <m:mi>s</m:mi>
+                <m:mrow>
+                  <m:mi>K</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mi>p</m:mi>
+                </m:mrow>
+                <m:mo>*</m:mo>
+              </m:msubsup>
+              <m:mo>:</m:mo>
+              <m:mo>=</m:mo>
+              <m:mo form="prefix">arg</m:mo>
+              <m:munder>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:mrow>
+                  <m:mi>s</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:msub>
+                    <m:mi>Σ</m:mi>
+                    <m:mi>K</m:mi>
+                  </m:msub>
+                </m:mrow>
+              </m:munder>
+              <m:msub>
+                <m:mrow>
+                  <m:mo>∥</m:mo>
+                  <m:mi>s</m:mi>
+                  <m:mo>-</m:mo>
+                  <m:mi>f</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:mi>p</m:mi>
+              </m:msub>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+(For the sake of generality, we consider general <m:math><m:msub><m:mi>L</m:mi><m:mi>p</m:mi></m:msub></m:math> and
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:math> norms in this section.) Due to the nonlinearity of the
+set <m:math><m:msub><m:mi>Σ</m:mi><m:mi>K</m:mi></m:msub></m:math> for a given dictionary, solving this
+problem can be difficult. Supposing <m:math><m:mi>Ψ</m:mi></m:math> is an orthonormal basis
+and <m:math><m:mrow><m:mi>p</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>, the solution to <link target-id="uid5"/> is easily obtained by
+thresholding: one simply computes the coefficients <m:math><m:mi>α</m:mi></m:math> and keeps the
+<m:math><m:mi>K</m:mi></m:math> largest (setting the remaining coefficients to zero). 
+
+The approximation error is then given simply
+by the coefficients that are discarded:
+
+<equation id="id2254743">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mo>∥</m:mo>
+              </m:mrow>
+              <m:msubsup>
+                <m:mi>s</m:mi>
+                <m:mrow>
+                  <m:mi>K</m:mi>
+                  <m:mo>,</m:mo>
+                  <m:mn>2</m:mn>
+                </m:mrow>
+                <m:mo>*</m:mo>
+              </m:msubsup>
+              <m:msub>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mi>f</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mfenced separators="" open="(" close=")">
+                  <m:munder>
+<m:mrow>
+                    <m:mo>∑</m:mo>
+</m:mrow>        
+            <m:mrow>
+                      <m:mi>k</m:mi>
+                      <m:mo>&gt;</m:mo>
+                      <m:mi>K</m:mi>
+                    </m:mrow>
+                  </m:munder>
+                  <m:msubsup>
+                    <m:mover accent="true">
+                      <m:mi>α</m:mi>
+                      <m:mo>˜</m:mo>
+                    </m:mover>
+                    <m:mi>k</m:mi>
+                    <m:mn>2</m:mn>
+                  </m:msubsup>
+                </m:mfenced>
+                <m:mrow>
+                  <m:mn>1</m:mn>
+                  <m:mo>/</m:mo>
+                  <m:mn>2</m:mn>
+                </m:mrow>
+              </m:msup>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+When <m:math><m:mi>Ψ</m:mi></m:math> is a redundant dictionary, however, the situation is
+much more complicated. We mention more on this below (see also
+<link target-id="uid3"/>(b)).</para>
+        
+        
+        
+        
+        <section id="uid6">
+          <title>Measuring approximation quality</title>
+          <para id="id2254866">One common measure for the quality of a dictionary <m:math><m:mi>Ψ</m:mi></m:math> in
+approximating a signal class is the fidelity of its
+<m:math><m:mi>K</m:mi></m:math>-term representations. Often one examines the
+asymptotic rate of decay of the <m:math><m:mi>K</m:mi></m:math>-term approximation
+error as <m:math><m:mi>K</m:mi></m:math> grows large. Defining
+<equation id="uid7">
+
+            <m:math mode="display">
+              <m:mrow>
+                <m:msub>
+                  <m:mi>σ</m:mi>
+                  <m:mi>K</m:mi>
+                </m:msub>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>f</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mi>p</m:mi>
+                </m:msub>
+                <m:mo>:</m:mo>
+                <m:mo>=</m:mo>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mrow>
+                      <m:msubsup>
+                        <m:mi>s</m:mi>
+                        <m:mrow>
+                          <m:mi>K</m:mi>
+                          <m:mo>,</m:mo>
+                          <m:mi>p</m:mi>
+                        </m:mrow>
+                        <m:mo>*</m:mo>
+                      </m:msubsup>
+                      <m:mo>-</m:mo>
+                      <m:mi>f</m:mi>
+                    </m:mrow>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mi>p</m:mi>
+                </m:msub>
+                <m:mo>,</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+for a given signal <m:math><m:mi>f</m:mi></m:math> we may consider the asymptotic decay of
+<m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mi>p</m:mi></m:msub></m:mrow></m:math> as <m:math><m:mrow><m:mi>K</m:mi><m:mo>→</m:mo><m:mi>∞</m:mi></m:mrow></m:math>. (We recall
+the dependence of <link target-id="uid5"/> and hence <link target-id="uid7"/> on the
+dictionary <m:math><m:mi>Ψ</m:mi></m:math>.) In many cases, the function
+<m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mi>p</m:mi></m:msub></m:mrow></m:math> will decay as <m:math><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mi>r</m:mi></m:mrow></m:msup></m:math> for some
+<m:math><m:mi>r</m:mi></m:math>, and when <m:math><m:mi>Ψ</m:mi></m:math> represents a harmonic dictionary, faster
+decay rates tend to correspond to smoother functions. Indeed, one
+can show that when <m:math><m:mi>Ψ</m:mi></m:math> is an orthonormal basis, then
+<m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msub></m:mrow></m:math> will decay as <m:math><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mi>r</m:mi></m:mrow></m:msup></m:math> if and only
+if <m:math><m:msub><m:mover accent="true"><m:mi>α</m:mi><m:mo>˜</m:mo></m:mover><m:mi>k</m:mi></m:msub></m:math> decays as <m:math><m:msup><m:mi>k</m:mi><m:mrow><m:mo>-</m:mo><m:mi>r</m:mi><m:mo>+</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:msup></m:math> <link target-id="bid3"/>.</para>
+          
+          
+        </section>
+        <section id="uid8">
+          <title>Nonlinear approximation of piecewise smooth functions</title>
+          <para id="id2255234">Let <m:math><m:mrow><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:mrow></m:math> be a 1-D function. Supposing the
+wavelet dictionary has more than <m:math><m:mi>H</m:mi></m:math> vanishing moments,
+then <m:math><m:mi>f</m:mi></m:math> can be well approximated using its <m:math><m:mi>K</m:mi></m:math> largest
+coefficients (most of which are at coarse scales). As <m:math><m:mi>K</m:mi></m:math>
+grows large, the nonlinear approximation error will
+decay<footnote id="id5067464">We use the notation <m:math><m:mrow><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo><m:mo>≲</m:mo><m:mi>g</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo></m:mrow></m:math>,
+or <m:math><m:mrow><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo><m:mo>=</m:mo><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>g</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo><m:mo>)</m:mo></m:mrow></m:math>, if there exists a constant <m:math><m:mi>C</m:mi></m:math>,
+possibly large but not dependent on the argument <m:math><m:mi>α</m:mi></m:math>, such
+that <m:math><m:mrow><m:mi>f</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo><m:mo>≤</m:mo><m:mi>C</m:mi><m:mi>g</m:mi><m:mo>(</m:mo><m:mi>α</m:mi><m:mo>)</m:mo></m:mrow></m:math>.</footnote> as <m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msub><m:mo>≲</m:mo><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mi>H</m:mi></m:mrow></m:msup></m:mrow></m:math>.</para>
+          <para id="id2255462">Supposing that <m:math><m:mi>f</m:mi></m:math> is piecewise smooth, however, with a finite
+number of discontinuities, then (as discussed in
+<link document="m18726" target-id="uid3">Sparse (Nonlinear) Models from Low-Dimensional Signal Models</link>)<!--Section 2.4.2--> <m:math><m:mi>f</m:mi></m:math> will have a limited number of
+significant wavelet coefficients at fine scales. Because of the
+concentration of these significant coefficients within each scale,
+the nonlinear approximation rate will remain
+<m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msub><m:mo>≲</m:mo><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mi>H</m:mi></m:mrow></m:msup></m:mrow></m:math> as if
+there were no discontinuities present <link target-id="bid0"/>.</para>
+          <para id="id2255541">Unfortunately, this resilience of wavelets to discontinuities does
+not extend to higher dimensions. Suppose, for example, that <m:math><m:mi>f</m:mi></m:math> is
+a <m:math><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:math> smooth 2-D signal. Assuming the proper
+number of vanishing moments, a wavelet representation will achieve
+the optimal nonlinear approximation rate <m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msub><m:mo>≲</m:mo><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mi>H</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:msup></m:mrow></m:math> <link target-id="bid4"/>, <link target-id="bid0"/>. As in the 1-D case, this approximation rate is maintained when a
+finite number of point discontinuities are introduced into <m:math><m:mi>f</m:mi></m:math>.
+However, when <m:math><m:mi>f</m:mi></m:math> contains 1-D discontinuities (edges separating
+the smooth regions), the approximation rate will fall to
+<m:math><m:mrow><m:msub><m:mi>σ</m:mi><m:mi>K</m:mi></m:msub><m:msub><m:mrow><m:mo>(</m:mo><m:mi>f</m:mi><m:mo>)</m:mo></m:mrow><m:mn>2</m:mn></m:msub><m:mo>≲</m:mo><m:msup><m:mi>K</m:mi><m:mrow><m:mo>-</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:msup></m:mrow></m:math> <link target-id="bid0"/>. The problem actually arises due to the isotropic, dyadic supports
+of the wavelets; instead of <m:math><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>)</m:mo></m:mrow></m:math> significant wavelets at each
+scale, there are now <m:math><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:msup><m:mn>2</m:mn><m:mi>j</m:mi></m:msup><m:mo>)</m:mo></m:mrow></m:math> wavelets overlapping the
+discontinuity. We revisit this important issue in
+<link document="m18729">Compression</link><!--Section 2.6-->.</para><para id="eip-56">Despite the limited approximation capabilities for images with edges, nonlinear approximation in the wavelet domain typically offers a superior approximation to an image compared to linear approximation in the wavelet domain. As an example, <link target-id="fs-id1169211320066"/>(b) shows the nonlinear approximation of the Cameraman test image obtained by keeping the largest scaling and wavelet coefficients. In this case, a number of high-frequency coefficients are selected, which gives an improved ability to represent features such as edges. Better concise transforms, which capture the image information in even fewer coefficients, would offer further improvements in terms of nonlinear approximation quality.</para>
+        </section>
+        <section id="uid10">
+          <title>Finding approximations</title>
+          <para id="id2255759">As mentioned above, in the case where <m:math><m:mi>Ψ</m:mi></m:math> is an orthonormal
+basis and <m:math><m:mrow><m:mi>p</m:mi><m:mo>=</m:mo><m:mn>2</m:mn></m:mrow></m:math>, the solution to <link target-id="uid5"/> is easily obtained
+by thresholding: one simply computes the coefficients <m:math><m:mi>α</m:mi></m:math> and keeps the
+<m:math><m:mi>K</m:mi></m:math> largest (setting the remaining coefficients to zero). Thresholding can also be shown to be optimal
+for arbitrary <m:math><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:math> norms in the special case where <m:math><m:mi>Ψ</m:mi></m:math> is
+the canonical basis. While the optimality of thresholding does not
+generalize to arbitrary norms and bases, thresholding can be shown
+to be a near-optimal approximation strategy for wavelet bases with
+arbitrary <m:math><m:msub><m:mi>L</m:mi><m:mi>p</m:mi></m:msub></m:math> norms <link target-id="bid3"/>.</para>
+          <para id="id2255860">In the case where <m:math><m:mi>Ψ</m:mi></m:math> is a redundant dictionary, however, the
+expansion coefficients <m:math><m:mi>α</m:mi></m:math> are not unique, and the
+optimization problem <link target-id="uid5"/> can be much more difficult to
+solve. Indeed, supposing even that an <emphasis>exact</emphasis>  
+<m:math><m:mi>K</m:mi></m:math>-term
+representation exists for <m:math><m:mi>f</m:mi></m:math> in the dictionary <m:math><m:mi>Ψ</m:mi></m:math>, finding
+that <m:math><m:mi>K</m:mi></m:math>-term approximation is NP-hard in general,
+requiring a combinatorial enumeration of the
+<m:math><m:mfenced separators="" open="(" close=")"><m:mfrac linethickness="0pt"><m:mi>Z</m:mi><m:mi>K</m:mi></m:mfrac></m:mfenced></m:math> possible sparse
+subspaces <link target-id="bid5"/>. This search can be recast as the
+optimization problem
+<equation id="uid11">
+
+            <m:math mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>α</m:mi>
+                  <m:mo>^</m:mo>
+                </m:mover>
+                <m:mo>=</m:mo>
+                <m:mo form="prefix">arg</m:mo>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mi>α</m:mi>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>0</m:mn>
+                </m:msub>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mtext>s.t.</m:mtext>
+                <m:mspace width="4.pt"/>
+                <m:mi>f</m:mi>
+                <m:mo>=</m:mo>
+                <m:mi>Ψ</m:mi>
+                <m:mi>α</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+
+While solving <link target-id="uid11"/> is prohibitively complex, a variety
+of algorithms have been proposed as alternatives. One approach
+convexifies the optimization problem by replacing the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math>
+fidelity criterion by an <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math> criterion
+<equation id="id2256083">
+
+            <m:math mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>α</m:mi>
+                  <m:mo>^</m:mo>
+                </m:mover>
+                <m:mo>=</m:mo>
+                <m:mo form="prefix">arg</m:mo>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mi>α</m:mi>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>1</m:mn>
+                </m:msub>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mtext>s.t.</m:mtext>
+                <m:mspace width="4.pt"/>
+                <m:mi>f</m:mi>
+                <m:mo>=</m:mo>
+                <m:mi>Ψ</m:mi>
+                <m:mi>α</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+
+This problem, known as Basis Pursuit <link target-id="bid6"/>, is
+significantly more approachable and can be solved with traditional
+linear programming techniques whose computational complexities are
+polynomial in <m:math><m:mi>Z</m:mi></m:math>. The  <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math> criterion has the advantage of yielding a convex optimization problem while still encouraging sparse solutions due to the polytope geometry of the  <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math> unit ball (see for example <link target-id="bid12"/> and <link target-id="bid14"/>).
+Iterative greedy algorithms such as
+Matching Pursuit (MP) and Orthogonal Matching Pursuit
+(OMP) <link target-id="bid0"/> have also been suggested to find sparse
+representations <m:math><m:mi>α</m:mi></m:math> for a signal <m:math><m:mi>f</m:mi></m:math>. Both MP and OMP
+iteratively select the columns from <m:math><m:mi>Ψ</m:mi></m:math> that are most
+correlated with <m:math><m:mi>f</m:mi></m:math>, then subtract the contribution of each
+column, leaving a residual. OMP includes an additional step at
+each iteration where the residual is orthogonalized against the
+previously selected columns.</para>
+          
+          
+          
+          
+        </section>
+      </section>
+      <section id="uid12"><title>Manifold approximation</title>
+        
+        <para id="id2256239">We also consider the problem of finding the best manifold-based
+approximation to a signal (see <link target-id="uid3"/>(c)).
+Suppose that <m:math><m:mrow><m:mi mathvariant="script">F</m:mi><m:mo>=</m:mo><m:mo>{</m:mo><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub><m:mo>:</m:mo><m:mi>θ</m:mi><m:mo>∈</m:mo><m:mi>Θ</m:mi><m:mo>}</m:mo></m:mrow></m:math> is a
+parametrized <m:math><m:mi>K</m:mi></m:math>-dimension manifold and that we are given a
+signal <m:math><m:mi>I</m:mi></m:math> that is believed to approximate <m:math><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:math> for an
+unknown <m:math><m:mrow><m:mi>θ</m:mi><m:mo>∈</m:mo><m:mi>Θ</m:mi></m:mrow></m:math>. From <m:math><m:mi>I</m:mi></m:math> we wish to recover an
+estimate of <m:math><m:mi>θ</m:mi></m:math>. Again, we may formulate this parameter
+estimation problem as an optimization, writing the objective
+function (here we concentrate solely on the <m:math><m:msub><m:mi>L</m:mi><m:mn>2</m:mn></m:msub></m:math> or <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>2</m:mn></m:msub></m:math>
+case)
+        <equation id="id2256387">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>D</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>θ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>=</m:mo>
+              <m:msubsup>
+                <m:mfenced separators="" open="∥" close="∥">
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mi>θ</m:mi>
+                  </m:msub>
+                  <m:mo>-</m:mo>
+                  <m:mi>I</m:mi>
+                </m:mfenced>
+                <m:mn>2</m:mn>
+                <m:mn>2</m:mn>
+              </m:msubsup>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+
+        and solving for
+
+
+        <equation id="id2256443">
+          <m:math mode="display">
+            <m:mrow>
+              <m:msup>
+                <m:mi>θ</m:mi>
+                <m:mo>*</m:mo>
+              </m:msup>
+              <m:mo>=</m:mo>
+              <m:mo form="prefix">arg</m:mo>
+              <m:munder>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:mrow>
+                  <m:mi>θ</m:mi>
+                  <m:mo>∈</m:mo>
+                  <m:mi>Θ</m:mi>
+                </m:mrow>
+              </m:munder>
+              <m:mi>D</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mi>θ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+  We suppose that the minimum is uniquely defined.</para>
+        <para id="id2256504">Standard nonlinear parameter estimation <link target-id="bid7"/> tells us
+that, if <m:math><m:mi>D</m:mi></m:math> is differentiable, we can use Newton's method to
+iteratively refine a sequence of guesses <m:math><m:mrow><m:msup><m:mi>θ</m:mi><m:mrow><m:mo>(</m:mo><m:mn>0</m:mn><m:mo>)</m:mo></m:mrow></m:msup><m:mo>,</m:mo><m:msup><m:mi>θ</m:mi><m:mrow><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>)</m:mo></m:mrow></m:msup><m:mo>,</m:mo><m:msup><m:mi>θ</m:mi><m:mrow><m:mo>(</m:mo><m:mn>2</m:mn><m:mo>)</m:mo></m:mrow></m:msup><m:mo>,</m:mo><m:mo>⋯</m:mo></m:mrow></m:math> to <m:math><m:msup><m:mi>θ</m:mi><m:mo>*</m:mo></m:msup></m:math> and rapidly
+convergence to the true value. Supposing that <m:math><m:mi mathvariant="script">F</m:mi></m:math> is a <emphasis>differentiable</emphasis> manifold, we would let
+        <equation id="id2256614">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>J</m:mi>
+              <m:mo>=</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>∂</m:mi>
+                  <m:mi>D</m:mi>
+                  <m:mo>/</m:mo>
+                  <m:mi>∂</m:mi>
+                  <m:msub>
+                    <m:mi>θ</m:mi>
+                    <m:mn>0</m:mn>
+                  </m:msub>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mi>∂</m:mi>
+                  <m:mi>D</m:mi>
+                  <m:mo>/</m:mo>
+                  <m:mi>∂</m:mi>
+                  <m:msub>
+                    <m:mi>θ</m:mi>
+                    <m:mn>1</m:mn>
+                  </m:msub>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mo>⋯</m:mo>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mspace width="3.33333pt"/>
+                  <m:mi>∂</m:mi>
+                  <m:mi>D</m:mi>
+                  <m:mo>/</m:mo>
+                  <m:mi>∂</m:mi>
+                  <m:msub>
+                    <m:mi>θ</m:mi>
+                    <m:mrow>
+                      <m:mi>K</m:mi>
+                      <m:mo>-</m:mo>
+                      <m:mn>1</m:mn>
+                    </m:mrow>
+                  </m:msub>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mi>T</m:mi>
+              </m:msup>
+            </m:mrow>
+          </m:math>
+        </equation>
+        be the gradient of <m:math><m:mi>D</m:mi></m:math>, and let <m:math><m:mi>H</m:mi></m:math> be the <m:math><m:mrow><m:mi>K</m:mi><m:mo>×</m:mo><m:mi>K</m:mi></m:mrow></m:math>
+Hessian, <m:math><m:mrow><m:msub><m:mi>H</m:mi><m:mrow><m:mi>i</m:mi><m:mi>j</m:mi></m:mrow></m:msub><m:mo>=</m:mo><m:mfrac><m:mrow><m:msup><m:mi>∂</m:mi><m:mn>2</m:mn></m:msup><m:mi>D</m:mi></m:mrow><m:mrow><m:mi>∂</m:mi><m:msub><m:mi>θ</m:mi><m:mi>i</m:mi></m:msub><m:mi>∂</m:mi><m:msub><m:mi>θ</m:mi><m:mi>j</m:mi></m:msub></m:mrow></m:mfrac></m:mrow></m:math>. Assuming <m:math><m:mi>D</m:mi></m:math> is differentiable, Newton's method
+specifies the following update step:
+        <equation id="id2256823">
+          <m:math mode="display">
+            <m:mrow>
+              <m:msup>
+                <m:mi>θ</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>k</m:mi>
+                  <m:mo>+</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+              </m:msup>
+              <m:mo>←</m:mo>
+              <m:msup>
+                <m:mi>θ</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>k</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+              </m:msup>
+              <m:mo>+</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>[</m:mo>
+                  <m:mi>H</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:msup>
+                      <m:mi>θ</m:mi>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mi>k</m:mi>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                    </m:msup>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                  <m:mo>]</m:mo>
+                </m:mrow>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                </m:mrow>
+              </m:msup>
+              <m:mi>J</m:mi>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:msup>
+                  <m:mi>θ</m:mi>
+                  <m:mrow>
+                    <m:mo>(</m:mo>
+                    <m:mi>k</m:mi>
+                    <m:mo>)</m:mo>
+                  </m:mrow>
+                </m:msup>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+       To relate this method to the structure of the manifold, we can
+actually express the gradient and Hessian in terms of signals,
+writing
+        <equation id="id2256932">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mi>D</m:mi>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:mi>θ</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mo>=</m:mo>
+                <m:mo>∥</m:mo>
+              </m:mrow>
+              <m:msub>
+                <m:mi>f</m:mi>
+                <m:mi>θ</m:mi>
+              </m:msub>
+              <m:msubsup>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mi>I</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+                <m:mn>2</m:mn>
+              </m:msubsup>
+              <m:mo>=</m:mo>
+              <m:mo>∫</m:mo>
+              <m:msup>
+                <m:mrow>
+                  <m:mo>(</m:mo>
+                  <m:msub>
+                    <m:mi>f</m:mi>
+                    <m:mi>θ</m:mi>
+                  </m:msub>
+                  <m:mo>-</m:mo>
+                  <m:mi>I</m:mi>
+                  <m:mo>)</m:mo>
+                </m:mrow>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="3.33333pt"/>
+              <m:mi>d</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>=</m:mo>
+              <m:mo>∫</m:mo>
+              <m:msubsup>
+                <m:mi>f</m:mi>
+                <m:mi>θ</m:mi>
+                <m:mn>2</m:mn>
+              </m:msubsup>
+              <m:mo>-</m:mo>
+              <m:mn>2</m:mn>
+              <m:mi>I</m:mi>
+              <m:msub>
+                <m:mi>f</m:mi>
+                <m:mi>θ</m:mi>
+              </m:msub>
+              <m:mo>+</m:mo>
+              <m:msup>
+                <m:mi>I</m:mi>
+                <m:mn>2</m:mn>
+              </m:msup>
+              <m:mspace width="3.33333pt"/>
+              <m:mi>d</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+       Differentiating with respect to component <m:math><m:msub><m:mi>θ</m:mi><m:mi>i</m:mi></m:msub></m:math>, we obtain
+        <equation id="id2257087">
+          <m:math mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mfrac>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:mi>D</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>i</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mo>=</m:mo>
+                    <m:mspace width="3.33333pt"/>
+                    <m:msub>
+                      <m:mi>J</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msub>
+                  </m:mrow>
+                </m:mtd>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mfrac>
+                      <m:mi>∂</m:mi>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>i</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mfenced separators="" open="(" close=")">
+                      <m:mo>∫</m:mo>
+                      <m:msubsup>
+                        <m:mi>f</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mn>2</m:mn>
+                      </m:msubsup>
+                      <m:mo>-</m:mo>
+                      <m:mn>2</m:mn>
+                      <m:mi>I</m:mi>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>θ</m:mi>
+                      </m:msub>
+                      <m:mo>+</m:mo>
+                      <m:msup>
+                        <m:mi>I</m:mi>
+                        <m:mn>2</m:mn>
+                      </m:msup>
+                      <m:mspace width="3.33333pt"/>
+                      <m:mi>d</m:mi>
+                      <m:mi>x</m:mi>
+                    </m:mfenced>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mo>∫</m:mo>
+                    <m:mfrac>
+                      <m:mi>∂</m:mi>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>i</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:msubsup>
+                        <m:mi>f</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mn>2</m:mn>
+                      </m:msubsup>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>-</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mi>I</m:mi>
+                    <m:mfrac>
+                      <m:mi>∂</m:mi>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>i</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>θ</m:mi>
+                    </m:msub>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mo>∫</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>θ</m:mi>
+                    </m:msub>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msubsup>
+                    <m:mo>-</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mi>I</m:mi>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msubsup>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mn>2</m:mn>
+                    <m:mo>〈</m:mo>
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>θ</m:mi>
+                    </m:msub>
+                    <m:mo>-</m:mo>
+                    <m:mi>I</m:mi>
+                    <m:mo>,</m:mo>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msubsup>
+                    <m:mo>〉</m:mo>
+                    <m:mo>,</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        where <m:math><m:mrow><m:msubsup><m:mi>τ</m:mi><m:mi>θ</m:mi><m:mi>i</m:mi></m:msubsup><m:mo>=</m:mo><m:mfrac><m:mrow><m:mi>∂</m:mi><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:mrow><m:mrow><m:mi>∂</m:mi><m:msub><m:mi>θ</m:mi><m:mi>i</m:mi></m:msub></m:mrow></m:mfrac></m:mrow></m:math> is a tangent signal. Continuing, we examine the
+Hessian,
+        <equation id="uid13">
+          <m:math mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:mrow>
+                    <m:mfrac>
+                      <m:mrow>
+                        <m:msup>
+                          <m:mi>∂</m:mi>
+                          <m:mn>2</m:mn>
+                        </m:msup>
+                        <m:mi>D</m:mi>
+                      </m:mrow>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>i</m:mi>
+                        </m:msub>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>j</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mo>=</m:mo>
+                    <m:mspace width="3.33333pt"/>
+                    <m:msub>
+                      <m:mi>H</m:mi>
+                      <m:mrow>
+                        <m:mi>i</m:mi>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msub>
+                  </m:mrow>
+                </m:mtd>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mfrac>
+                      <m:mi>∂</m:mi>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>j</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mfenced separators="" open="(" close=")">
+                      <m:mfrac>
+                        <m:mrow>
+                          <m:mi>∂</m:mi>
+                          <m:mi>D</m:mi>
+                        </m:mrow>
+                        <m:mrow>
+                          <m:mi>∂</m:mi>
+                          <m:msub>
+                            <m:mi>θ</m:mi>
+                            <m:mi>i</m:mi>
+                          </m:msub>
+                        </m:mrow>
+                      </m:mfrac>
+                    </m:mfenced>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mo>∫</m:mo>
+                    <m:mfrac>
+                      <m:mi>∂</m:mi>
+                      <m:mrow>
+                        <m:mi>∂</m:mi>
+                        <m:msub>
+                          <m:mi>θ</m:mi>
+                          <m:mi>j</m:mi>
+                        </m:msub>
+                      </m:mrow>
+                    </m:mfrac>
+                    <m:mfenced separators="" open="(" close=")">
+                      <m:mn>2</m:mn>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>θ</m:mi>
+                      </m:msub>
+                      <m:msubsup>
+                        <m:mi>τ</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msubsup>
+                      <m:mo>-</m:mo>
+                      <m:mn>2</m:mn>
+                      <m:mi>I</m:mi>
+                      <m:msubsup>
+                        <m:mi>τ</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msubsup>
+                    </m:mfenced>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mo>∫</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mi>i</m:mi>
+                    </m:msubsup>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mi>j</m:mi>
+                    </m:msubsup>
+                    <m:mo>+</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:msub>
+                      <m:mi>f</m:mi>
+                      <m:mi>θ</m:mi>
+                    </m:msub>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mrow>
+                        <m:mi>i</m:mi>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mo>-</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mi>I</m:mi>
+                    <m:msubsup>
+                      <m:mi>τ</m:mi>
+                      <m:mi>θ</m:mi>
+                      <m:mrow>
+                        <m:mi>i</m:mi>
+                        <m:mi>j</m:mi>
+                      </m:mrow>
+                    </m:msubsup>
+                    <m:mspace width="3.33333pt"/>
+                    <m:mi>d</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+              <m:mtr>
+                <m:mtd/>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:mn>2</m:mn>
+                    <m:mrow>
+                      <m:mo>〈</m:mo>
+                      <m:msubsup>
+                        <m:mi>τ</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mi>i</m:mi>
+                      </m:msubsup>
+                      <m:mo>,</m:mo>
+                      <m:msubsup>
+                        <m:mi>τ</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mi>j</m:mi>
+                      </m:msubsup>
+                      <m:mo>〉</m:mo>
+                    </m:mrow>
+                    <m:mo>+</m:mo>
+                    <m:mn>2</m:mn>
+                    <m:mrow>
+                      <m:mo>〈</m:mo>
+                      <m:msub>
+                        <m:mi>f</m:mi>
+                        <m:mi>θ</m:mi>
+                      </m:msub>
+                      <m:mo>-</m:mo>
+                      <m:mi>I</m:mi>
+                      <m:mo>,</m:mo>
+                      <m:msubsup>
+                        <m:mi>τ</m:mi>
+                        <m:mi>θ</m:mi>
+                        <m:mrow>
+                          <m:mi>i</m:mi>
+                          <m:mi>j</m:mi>
+                        </m:mrow>
+                      </m:msubsup>
+                      <m:mo>〉</m:mo>
+                    </m:mrow>
+                    <m:mo>,</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+        where <m:math><m:mrow><m:msubsup><m:mi>τ</m:mi><m:mi>θ</m:mi><m:mrow><m:mi>i</m:mi><m:mi>j</m:mi></m:mrow></m:msubsup><m:mo>=</m:mo><m:mfrac><m:mrow><m:msup><m:mi>∂</m:mi><m:mn>2</m:mn></m:msup><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:mrow><m:mrow><m:mi>∂</m:mi><m:msub><m:mi>θ</m:mi><m:mi>i</m:mi></m:msub><m:mi>∂</m:mi><m:msub><m:mi>θ</m:mi><m:mi>j</m:mi></m:msub></m:mrow></m:mfrac></m:mrow></m:math> denotes a second-derivative signal. Thus, we
+can interpret Newton's method geometrically as (essentially) a
+sequence of successive projections onto tangent spaces on the
+manifold.</para>
+        <para id="id2257904">Again, the above discussion assumes the manifold to be
+differentiable. Many interesting parametric signal manifolds are in fact nowhere
+differentiable — the tangent spaces demanded by Newton's method
+do not exist. However, in <link target-id="bid100"/> we have identified a type of multiscale tangent structure to the manifold that permits a coarse-to-fine technique for parameter estimation. </para>
+      </section>
+ 
+  </content>
+  <bib:file>
+
+
+
+<bib:entry id="bid100">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author> M. B. Wakin and D. L. Donoho and H. Choi, and R. G. Baraniuk </bib:author>
+        <bib:title> High-resolution navigation on non-differentiable image manifolds </bib:title>
+        <bib:booktitle> Proc. Int. Conf. Acoustics, Speech, Signal Processing (ICASSP)</bib:booktitle>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address> </bib:address>
+        <bib:month> </bib:month>
+        <bib:organization/>
+        <bib:publisher>IEEE</bib:publisher>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+
+
+
+    <bib:entry id="bid7">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Bates, D. M. and Watts, D. G.</bib:author>
+        <bib:title>Nonlinear Regression Analysis and Its Applications</bib:title>
+        <bib:publisher>John Wiley and Sons</bib:publisher>
+        <bib:year>1988</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>New York</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Cohen, A. and Dahmen, W. and Daubechies, I. and DeVore, R.</bib:author>
+        <bib:title>Tree Approximation and Optimal Encoding</bib:title>
+        <bib:journal>Appl. Comput. Harmon. Anal.</bib:journal>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:volume>11</bib:volume>
+        <bib:number/>
+        <bib:pages>192-226</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Cohen, A. and Daubechies, I. and Guleryuz, O. G. and Orchard, M. T.</bib:author>
+        <bib:title>On the importance of combining wavelet-based nonlinear approximation with coding strategies</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2002</bib:year>
+<!--optional fields-->
+        <bib:volume>48</bib:volume>
+        <bib:number>7</bib:number>
+        <bib:pages>1895-1921</bib:pages>
+        <bib:month>July</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Chen, S. and Donoho, D. and Saunders, M.</bib:author>
+        <bib:title>Atomic decomposition by basis pursuit</bib:title>
+        <bib:journal>SIAM J. on Sci. Comp.</bib:journal>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:volume>20</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages>33-61</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Tao, T.</bib:author>
+        <bib:title>Error correction via linear programming</bib:title>
+        <bib:journal>Found. of Comp. Math.</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:article>
+<!--required fields-->
+        <bib:author>DeVore, R. A.</bib:author>
+        <bib:title>Lecture notes on Compressed Sensing</bib:title>
+        <bib:journal>Rice University ELEC 631 Course Notes</bib:journal>
+        <bib:year>Spring 2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>DeVore, R. A.</bib:author>
+        <bib:title>Nonlinear Approximation</bib:title>
+        <bib:journal>Acta Numerica</bib:journal>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:volume>7</bib:volume>
+        <bib:number/>
+        <bib:pages>51-150</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid12">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. and Tanner, J.</bib:author>
+        <bib:title>Neighborliness of randomly-projected simplices in high dimensions</bib:title>
+        <bib:journal/>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid14">
+      <bib:techreport>
+<!--required fields-->
+        <bib:author>Donoho, D. L. and Tanner, J.</bib:author>
+        <bib:title>Counting faces of randomly-projected polytopes when then projection radically lowers dimension</bib:title>
+        <bib:institution>Stanford University Department of Statistics</bib:institution>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:type>Technical report</bib:type>
+        <bib:number>2006-11</bib:number>
+        <bib:address/>
+        <bib:month/>
+        <bib:note/>
+      </bib:techreport>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Mallat, S.</bib:author>
+        <bib:title>A wavelet tour of signal processing</bib:title>
+        <bib:publisher>Academic Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>San Diego, CA, USA</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+
+  </bib:file>
+</document>

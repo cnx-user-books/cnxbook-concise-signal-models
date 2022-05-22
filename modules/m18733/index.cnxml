@@ -1,0 +1,1194 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Compressed Sensing</title>
+  <metadata>
+  <md:content-id>m18733</md:content-id><md:title>Compressed Sensing</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>2f0a2a14-fa55-400a-8890-e356ae1c1673</md:uuid>
+</metadata>
+
+<content>
+    
+      <para id="id2253734">A new theory known as Compressed Sensing (CS) has recently emerged
+that can also be categorized as a type of dimensionality
+reduction. Like manifold learning, CS is strongly model-based
+(relying on sparsity in particular).
+However, unlike many of the standard techniques in dimensionality
+reduction (such as manifold learning or the JL lemma), the goal of
+CS is to maintain a low-dimensional representation of a signal <m:math><m:mi>x</m:mi></m:math>
+from which a faithful approximation to <m:math><m:mi>x</m:mi></m:math> can be recovered.
+In a sense, this more closely resembles the traditional problem of
+data compression (see <link document="m18729">Compression</link><!--Section 2.6-->).
+In CS, however, the encoder requires no a priori knowledge of the
+signal structure. Only the <emphasis>decoder</emphasis> uses the model (sparsity)
+to recover the signal.  We
+justify such an approach again using geometric arguments.</para>
+      <section id="uid1"><title>Motivation</title>
+        
+        <para id="id2253792">Consider a signal <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math>, and suppose that the basis
+<m:math><m:mi>Ψ</m:mi></m:math> provides a <m:math><m:mi>K</m:mi></m:math>-sparse representation of <m:math><m:mi>x</m:mi></m:math>
+        <equation id="id2253845">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>x</m:mi>
+              <m:mo>=</m:mo>
+              <m:mi>Ψ</m:mi>
+              <m:mi>α</m:mi>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+       with <m:math><m:mrow><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>α</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>0</m:mn></m:msub><m:mo>=</m:mo><m:mi>K</m:mi></m:mrow></m:math>. (In this section, we focus on
+exactly <m:math><m:mi>K</m:mi></m:math>-sparse signals, though many of the key ideas
+translate to compressible signals <link target-id="bid0"/>, <link target-id="bid1"/>. In
+addition, we note that the CS concepts are also extendable to
+tight frames.)</para>
+        <para id="id2253921">As we discussed in <link document="m18729">Compression</link><!--Section 2.6-->, the standard
+procedure for compressing sparse signals, known as transform
+coding, is to (i) acquire the full <m:math><m:mi>N</m:mi></m:math>-sample signal <m:math><m:mi>x</m:mi></m:math>;
+(ii) compute the complete set of transform coefficients <m:math><m:mi>α</m:mi></m:math>;
+(iii) locate the <m:math><m:mi>K</m:mi></m:math> largest, significant coefficients and
+discard the (many) small coefficients; (iv) encode the <emphasis>values
+and locations</emphasis> of the largest coefficients.</para>
+        <para id="id2253977">This procedure has three inherent inefficiencies: First, for a
+high-dimensional signal, we must start with a large number of
+samples <m:math><m:mi>N</m:mi></m:math>. Second, the encoder must compute <emphasis>all</emphasis> <m:math><m:mi>N</m:mi></m:math>
+of the transform coefficients <m:math><m:mi>α</m:mi></m:math>, even though it will
+discard all but <m:math><m:mi>K</m:mi></m:math> of them. Third, the encoder must
+encode the locations of the large coefficients, which requires
+increasing the coding rate since the locations change with each
+signal.</para>
+      </section>
+      <section id="uid2"><title>Incoherent projections</title>
+        
+        <para id="id2254035">This raises a simple question: For a given signal, is it possible
+to directly estimate the set of large <m:math><m:mrow><m:mi>α</m:mi><m:mo>(</m:mo><m:mi>n</m:mi><m:mo>)</m:mo></m:mrow></m:math>'s that will not
+be discarded? While this seems improbable, Candès, Romberg,
+and Tao <link target-id="bid2"/>, <link target-id="bid0"/> and Donoho <link target-id="bid1"/> have
+shown that a reduced set of projections can contain enough
+information to reconstruct sparse signals. An offshoot of this
+work, often referred to as <emphasis>Compressed Sensing</emphasis> (CS)
+<link target-id="bid3"/>, <link target-id="bid0"/>, <link target-id="bid4"/>, <link target-id="bid5"/>, <link target-id="bid6"/>, <link target-id="bid1"/>, <link target-id="bid7"/>,
+has emerged that builds on this principle.</para>
+
+
+        <para id="id2254359">In CS, we do not measure or encode the <m:math><m:mi>K</m:mi></m:math> significant
+<m:math><m:mrow><m:mi>α</m:mi><m:mo>(</m:mo><m:mi>n</m:mi><m:mo>)</m:mo></m:mrow></m:math> directly. Rather, we measure and encode <m:math><m:mrow><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>
+projections <m:math><m:mrow><m:mi>y</m:mi><m:mrow><m:mo>(</m:mo><m:mi>m</m:mi><m:mo>)</m:mo></m:mrow><m:mo>=</m:mo><m:mrow><m:mo>&lt;</m:mo><m:mi>x</m:mi><m:mo>,</m:mo><m:msub><m:mi>φ</m:mi><m:mi>m</m:mi></m:msub><m:msup><m:mrow/><m:mi>T</m:mi></m:msup><m:mo>&gt;</m:mo></m:mrow></m:mrow></m:math> of the
+signal onto a <emphasis>second set</emphasis> of functions
+<m:math><m:mrow><m:mo>{</m:mo><m:msub><m:mi>φ</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo><m:mo>,</m:mo><m:mi>m</m:mi><m:mo>=</m:mo><m:mn>1</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mo>,</m:mo><m:mo>...</m:mo><m:mo>,</m:mo><m:mi>M</m:mi></m:mrow></m:math>. In matrix notation, we measure
+        <equation id="id2254492">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>y</m:mi>
+              <m:mo>=</m:mo>
+              <m:mi>Φ</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>,</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+    where <m:math><m:mi>y</m:mi></m:math> is an <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mn>1</m:mn></m:mrow></m:math> column vector and the <emphasis>measurement basis</emphasis> matrix <m:math><m:mi>Φ</m:mi></m:math> is <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> with each
+row a basis vector <m:math><m:msub><m:mi>φ</m:mi><m:mi>m</m:mi></m:msub></m:math>. Since <m:math><m:mrow><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>, recovery of
+the signal <m:math><m:mi>x</m:mi></m:math> from the measurements <m:math><m:mi>y</m:mi></m:math> is ill-posed in general;
+however the additional assumption of signal <emphasis>sparsity</emphasis> makes
+recovery possible and practical.</para>
+        <para id="id2254621">The CS theory tells us that when certain conditions hold, namely
+that the functions <m:math><m:mrow><m:mo>{</m:mo><m:msub><m:mi>φ</m:mi><m:mi>m</m:mi></m:msub><m:mo>}</m:mo></m:mrow></m:math> cannot sparsely represent the
+elements of the basis <m:math><m:mrow><m:mo>{</m:mo><m:msub><m:mi>ψ</m:mi><m:mi>n</m:mi></m:msub><m:mo>}</m:mo></m:mrow></m:math> (a condition known as <emphasis>incoherence</emphasis> of the two dictionaries
+<link target-id="bid0"/>, <link target-id="bid2"/>, <link target-id="bid1"/>, <link target-id="bid8"/>) and the number of
+measurements <m:math><m:mi>M</m:mi></m:math> is large enough, then it is indeed possible
+to recover the set of large <m:math><m:mrow><m:mo>{</m:mo><m:mi>α</m:mi><m:mo>(</m:mo><m:mi>n</m:mi><m:mo>)</m:mo><m:mo>}</m:mo></m:mrow></m:math> (and thus the signal
+<m:math><m:mi>x</m:mi></m:math>) from a similarly sized set of measurements <m:math><m:mi>y</m:mi></m:math>. This
+incoherence property holds for many pairs of bases, including for
+example, delta spikes and the sine waves of a Fourier basis, or
+the Fourier basis and wavelets. Significantly, this incoherence
+also holds with high probability between an arbitrary fixed basis
+and a randomly generated one.</para>
+      </section>
+      <section id="uid3">
+        <title>Methods for signal recovery</title>
+        <para id="id2254756">Although the problem of recovering <m:math><m:mi>x</m:mi></m:math> from <m:math><m:mi>y</m:mi></m:math> is ill-posed in
+general (because <m:math><m:mrow><m:mi>x</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math>, <m:math><m:mrow><m:mi>y</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:mrow></m:math>, and
+<m:math><m:mrow><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>), it is indeed possible to recover <emphasis>sparse</emphasis>
+signals from CS measurements. Given the measurements <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math>, there exist an infinite number of candidate signals in the
+shifted nullspace <m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mi>Φ</m:mi><m:mo>)</m:mo><m:mo>+</m:mo><m:mi>x</m:mi></m:mrow></m:math> that could generate the
+same measurements <m:math><m:mi>y</m:mi></m:math> (see <link document="m18726" target-id="uid1">Linear Models from Low-Dimensional Signal Models</link><!--Section 2.4.1-->).
+Recovery of the correct signal <m:math><m:mi>x</m:mi></m:math> can be accomplished by seeking
+a <emphasis>sparse</emphasis> solution among these candidates.</para>
+        <section id="uid4"><title>Recovery via combinatorial optimization</title>
+          
+          <para id="id2254929">Supposing that <m:math><m:mi>x</m:mi></m:math> is exactly <m:math><m:mi>K</m:mi></m:math>-sparse in the dictionary
+<m:math><m:mi>Ψ</m:mi></m:math>, then recovery of <m:math><m:mi>x</m:mi></m:math> from <m:math><m:mi>y</m:mi></m:math> can be formulated as the
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math> minimization
+          <equation id="uid5">
+            <m:math mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>α</m:mi>
+                  <m:mo>^</m:mo>
+                </m:mover>
+                <m:mo>=</m:mo>
+                <m:mo form="prefix">arg</m:mo>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mi>α</m:mi>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>0</m:mn>
+                </m:msub>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mtext>s.t.</m:mtext>
+                <m:mspace width="4.pt"/>
+                <m:mi>y</m:mi>
+                <m:mo>=</m:mo>
+                <m:mi>Φ</m:mi>
+                <m:mi>Ψ</m:mi>
+                <m:mi>α</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+         Given some technical conditions on <m:math><m:mi>Φ</m:mi></m:math> and <m:math><m:mi>Ψ</m:mi></m:math> (see
+Theorem <link target-id="uid4"/>below), then with high probability
+this optimization problem returns the proper <m:math><m:mi>K</m:mi></m:math>-sparse
+solution <m:math><m:mi>α</m:mi></m:math>, from which the true <m:math><m:mi>x</m:mi></m:math> may be constructed.
+(Thanks to the incoherence between the two bases, if the original
+signal is sparse in the <m:math><m:mi>α</m:mi></m:math> coefficients, then no other set
+of sparse signal coefficients <m:math><m:msup><m:mi>α</m:mi><m:mo>'</m:mo></m:msup></m:math> can yield the same
+projections <m:math><m:mi>y</m:mi></m:math>.) We note that the recovery program <link target-id="uid5"/>
+can be interpreted as finding a <m:math><m:mi>K</m:mi></m:math>-term approximation to
+<m:math><m:mi>y</m:mi></m:math> from the columns of the dictionary <m:math><m:mrow><m:mi>Φ</m:mi><m:mi>Ψ</m:mi></m:mrow></m:math>, which we call
+the <emphasis>holographic basis</emphasis> because of the complex pattern in
+which it encodes the sparse signal coefficients <link target-id="bid1"/>.</para>
+          <para id="id2255213">In principle, remarkably few incoherent measurements are required
+to recover a <m:math><m:mi>K</m:mi></m:math>-sparse signal via <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math> minimization.
+Clearly, more than <m:math><m:mi>K</m:mi></m:math> measurements must be taken to avoid
+ambiguity; the following theorem (which is proved in <link target-id="bid100"/>) establishes that <m:math><m:mrow><m:mi>K</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:math>
+random measurements will suffice. (Similar results were
+established by Venkataramani and Bresler <link target-id="bid9"/>.)</para>
+          
+<rule id="theorem1" type="Theorem"><label>Theorem</label>
+<statement id="id44268588">
+<para id="id2255276">Let <m:math><m:mi>Ψ</m:mi></m:math> be an orthonormal basis for
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, and let <m:math><m:mrow><m:mn>1</m:mn><m:mo>≤</m:mo><m:mi>K</m:mi><m:mo>&lt;</m:mo><m:mi>N</m:mi></m:mrow></m:math>. Then the following
+statements hold:</para>
+          <list id="id2255324" list-type="enumerated"><item id="uid6">Let <m:math><m:mi>Φ</m:mi></m:math> be an <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> measurement matrix with
+i.i.d. Gaussian entries with <m:math><m:mrow><m:mi>M</m:mi><m:mo>≥</m:mo><m:mn>2</m:mn><m:mi>K</m:mi></m:mrow></m:math>. Then with
+probability one the following statement holds: all signals <m:math><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mi>Ψ</m:mi><m:mi>α</m:mi></m:mrow></m:math> having expansion coefficients <m:math><m:mrow><m:mi>α</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math>
+that satisfy <m:math><m:mrow><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>α</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>0</m:mn></m:msub><m:mo>=</m:mo><m:mi>K</m:mi></m:mrow></m:math> can be recovered uniquely
+from the <m:math><m:mi>M</m:mi></m:math>-dimensional measurement vector <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math> via
+the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math> optimization <link target-id="uid5"/>.
+</item>
+            <item id="uid7">Let <m:math><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mi>Ψ</m:mi><m:mi>α</m:mi></m:mrow></m:math> such that <m:math><m:mrow><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>α</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>0</m:mn></m:msub><m:mo>=</m:mo><m:mi>K</m:mi></m:mrow></m:math>. Let <m:math><m:mi>Φ</m:mi></m:math> be an
+<m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> measurement matrix with i.i.d. Gaussian
+entries (notably, independent of <m:math><m:mi>x</m:mi></m:math>) with <m:math><m:mrow><m:mi>M</m:mi><m:mo>≥</m:mo><m:mi>K</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:math>. Then with probability one the following statement
+holds: <m:math><m:mi>x</m:mi></m:math> can be recovered uniquely from the <m:math><m:mi>M</m:mi></m:math>-dimensional
+measurement vector <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math> via the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math> optimization
+<link target-id="uid5"/>.
+</item>
+            <item id="uid8">Let <m:math><m:mi>Φ</m:mi></m:math> be an <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math>
+measurement matrix, where <m:math><m:mrow><m:mi>M</m:mi><m:mo>≤</m:mo><m:mi>K</m:mi></m:mrow></m:math>. Then, aside from
+pathological cases (specified in the proof), no signal <m:math><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mi>Ψ</m:mi><m:mi>α</m:mi></m:mrow></m:math> with <m:math><m:mrow><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>α</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>0</m:mn></m:msub><m:mo>=</m:mo><m:mi>K</m:mi></m:mrow></m:math> can be uniquely
+recovered from the <m:math><m:mi>M</m:mi></m:math>-dimensional measurement vector <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math>.
+</item>
+          </list>
+          </statement>
+</rule>
+          
+          <para id="id2255794">The second statement of the theorem differs from the first in the
+following respect: when <m:math><m:mrow><m:mi>K</m:mi><m:mo>&lt;</m:mo><m:mi>M</m:mi><m:mo>&lt;</m:mo><m:mn>2</m:mn><m:mi>K</m:mi></m:mrow></m:math>, there
+will necessarily exist <m:math><m:mi>K</m:mi></m:math>-sparse signals <m:math><m:mi>x</m:mi></m:math> that cannot
+be uniquely recovered from the <m:math><m:mi>M</m:mi></m:math>-dimensional measurement
+vector <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math>. However, these signals form a set of measure
+zero within the set of <emphasis>all</emphasis><m:math><m:mi>K</m:mi></m:math>-sparse signals and
+can safely be avoided if <m:math><m:mi>Φ</m:mi></m:math> is randomly generated
+independently of <m:math><m:mi>x</m:mi></m:math>.</para>
+          <para id="id2255901">Unfortunately, as discussed in <link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->, solving this
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math> optimization problem is prohibitively complex. Yet
+another challenge is robustness; in the setting of
+Theorem <link target-id="uid4">"Recovery via ℓ 0  optimization"</link>, the recovery may be very poorly
+conditioned. In fact, <emphasis>both</emphasis> of these considerations
+(computational complexity and robustness) can be addressed, but at
+the expense of slightly more measurements.</para>
+        </section>
+        <section id="uid9"><title>Recovery via convex optimization</title>
+          
+          <para id="id2255962">The practical revelation that supports the new CS theory is that
+it is not necessary to solve the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub></m:math>-minimization problem to
+recover <m:math><m:mi>α</m:mi></m:math>. In fact, a much easier problem yields an
+equivalent solution (thanks again to the incoherency of the
+bases); we need only solve for the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math>-sparsest coefficients
+<m:math><m:mi>α</m:mi></m:math> that agree with the measurements <m:math><m:mi>y</m:mi></m:math>  
+<link target-id="bid2"/>, <link target-id="bid3"/>, <link target-id="bid0"/>, <link target-id="bid4"/>, <link target-id="bid5"/>, <link target-id="bid6"/>, <link target-id="bid1"/>, <link target-id="bid7"/>
+<equation id="uid10">
+
+            <m:math mode="display">
+              <m:mrow>
+                <m:mover accent="true">
+                  <m:mi>α</m:mi>
+                  <m:mo>^</m:mo>
+                </m:mover>
+                <m:mo>=</m:mo>
+                <m:mo form="prefix">arg</m:mo>
+                <m:mo movablelimits="true" form="prefix">min</m:mo>
+                <m:msub>
+                  <m:mrow>
+                    <m:mo>∥</m:mo>
+                    <m:mi>α</m:mi>
+                    <m:mo>∥</m:mo>
+                  </m:mrow>
+                  <m:mn>1</m:mn>
+                </m:msub>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mspace width="3.33333pt"/>
+                <m:mtext>s.t.</m:mtext>
+                <m:mspace width="4.pt"/>
+                <m:mi>y</m:mi>
+                <m:mo>=</m:mo>
+                <m:mi>Φ</m:mi>
+                <m:mi>Ψ</m:mi>
+                <m:mi>α</m:mi>
+                <m:mo>.</m:mo>
+              </m:mrow>
+            </m:math>
+          </equation>
+          
+          As discussed in <link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->, this optimization problem,
+also known as <emphasis>Basis Pursuit</emphasis> <link target-id="bid10"/>, is
+significantly more approachable and can be solved with traditional
+linear programming techniques whose computational complexities are
+polynomial in <m:math><m:mi>N</m:mi></m:math>.</para>
+          <para id="id2256180">There is no free lunch, however; according to the theory, more
+than <m:math><m:mrow><m:mi>K</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:math> measurements are required in order to recover
+sparse signals via Basis Pursuit. Instead, one typically requires
+<m:math><m:mrow><m:mi>M</m:mi><m:mo>≥</m:mo><m:mi>c</m:mi><m:mi>K</m:mi></m:mrow></m:math> measurements, where <m:math><m:mrow><m:mi>c</m:mi><m:mo>&gt;</m:mo><m:mn>1</m:mn></m:mrow></m:math> is an <emphasis>oversampling factor</emphasis>. As an example, we quote a result asymptotic
+in <m:math><m:mi>N</m:mi></m:math>. For simplicity, we assume that the sparsity scales
+linearly with <m:math><m:mi>N</m:mi></m:math>; that is, <m:math><m:mrow><m:mi>K</m:mi><m:mo>=</m:mo><m:mi>S</m:mi><m:mi>N</m:mi></m:mrow></m:math>, where we call
+<m:math><m:mi>S</m:mi></m:math> the <emphasis>sparsity rate</emphasis>.</para>
+         
+<rule id="theorem2" type="Theorem"><label>Theorem</label>
+<statement id="id44266600">
+ <para id="id2256289"><link target-id="bid11"/>, <link target-id="bid12"/>, <link target-id="bid13"/>
+ Set <m:math><m:mrow><m:mi>K</m:mi><m:mo>=</m:mo><m:mi>S</m:mi><m:mi>N</m:mi></m:mrow></m:math> with <m:math><m:mrow><m:mn>0</m:mn><m:mo>&lt;</m:mo><m:mi>S</m:mi><m:mo>≪</m:mo><m:mn>1</m:mn></m:mrow></m:math>. Then there exists an oversampling factor <m:math><m:mrow><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo><m:mo>=</m:mo><m:mi>O</m:mi><m:mo>(</m:mo><m:mo form="prefix">log</m:mo><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mi>S</m:mi><m:mo>)</m:mo><m:mo>)</m:mo></m:mrow></m:math>, <m:math><m:mrow><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo><m:mo>&gt;</m:mo><m:mn>1</m:mn></m:mrow></m:math>, such that, for a <m:math><m:mi>K</m:mi></m:math>-sparse signal <m:math><m:mi>x</m:mi></m:math> in the basis <m:math><m:mi>Ψ</m:mi></m:math>, the
+following statements hold:</para>
+          <list id="id2256434" list-type="enumerated">
+            <item id="uid11">The probability of recovering <m:math><m:mi>x</m:mi></m:math> via Basis Pursuit from
+<m:math><m:mrow><m:mo>(</m:mo><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo><m:mo>+</m:mo><m:mi>ϵ</m:mi><m:mo>)</m:mo><m:mi>K</m:mi></m:mrow></m:math> random projections, <m:math><m:mrow><m:mi>ϵ</m:mi><m:mo>&gt;</m:mo><m:mn>0</m:mn></m:mrow></m:math>,
+converges to one as <m:math><m:mrow><m:mi>N</m:mi><m:mo>→</m:mo><m:mi>∞</m:mi></m:mrow></m:math>.
+</item>
+            <item id="uid12">The probability of recovering <m:math><m:mi>x</m:mi></m:math> via Basis Pursuit from
+<m:math><m:mrow><m:mo>(</m:mo><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo><m:mo>-</m:mo><m:mi>ϵ</m:mi><m:mo>)</m:mo><m:mi>K</m:mi></m:mrow></m:math> random projections, <m:math><m:mrow><m:mi>ϵ</m:mi><m:mo>&gt;</m:mo><m:mn>0</m:mn></m:mrow></m:math>,
+converges to zero as <m:math><m:mrow><m:mi>N</m:mi><m:mo>→</m:mo><m:mi>∞</m:mi></m:mrow></m:math>.
+</item>
+          </list>
+</statement>
+</rule>
+          <para id="id2256593">In an illuminating series of recent papers, Donoho and Tanner
+<link target-id="bid13"/>, <link target-id="bid12"/>, <link target-id="bid14"/> have characterized the
+oversampling factor <m:math><m:mrow><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo></m:mrow></m:math> precisely (see also
+<link target-id="uid15">"The geometry of Compressed Sensing"</link>). With appropriate oversampling,
+reconstruction via Basis Pursuit is also provably robust to
+measurement noise and quantization error <link target-id="bid2"/>.</para>
+          <para id="id2256645">We
+often use the abbreviated notation <m:math><m:mi>c</m:mi></m:math> to describe the
+oversampling factor required in various settings even though
+<m:math><m:mrow><m:mi>c</m:mi><m:mo>(</m:mo><m:mi>S</m:mi><m:mo>)</m:mo></m:mrow></m:math> depends on the sparsity <m:math><m:mi>K</m:mi></m:math> and signal length
+<m:math><m:mi>N</m:mi></m:math>.</para>
+
+
+   <para id="eip-612">A CS recovery example on the Cameraman test image is shown in <link target-id="fs-id3118171"/>. In this case, with <m:math><m:mi>M</m:mi><m:mo>=</m:mo><m:mn>4</m:mn><m:mi>K</m:mi></m:math> we achieve near-perfect recovery of the sparse measured image.</para><figure id="fs-id3118171" orient="horizontal"><media id="fs-id3118174" alt=""><image src="../../media/cameraCS.png" mime-type="image/png" width="450"/><image for="pdf" src="../../media/cameraCS.eps" mime-type="application/postscript" print-width="2.5in"/></media>
+              <caption>Compressive sensing reconstruction of the nonlinear approximation Cameraman image from <link target-id="fs-id1169211320066" document="m18727"/>(b). Using <m:math><m:mi>M</m:mi><m:mo>=</m:mo><m:mn>16384</m:mn></m:math> random measurements of the <m:math><m:mi>K</m:mi></m:math>-term nonlinear approximation image (where <m:math><m:mi>K</m:mi><m:mo>=</m:mo><m:mn>4096</m:mn></m:math>), we solve an <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math>-minimization problem to obtain the reconstruction shown above. The MSE with respect to the measured image is <m:math><m:mn>0.08</m:mn></m:math>, so the reconstruction is virtually perfect.</caption></figure>
+
+        </section>
+        <section id="uid13">
+          <title>Recovery via greedy pursuit</title>
+          <para id="id2256706">At the expense of slightly more measurements, iterative greedy
+algorithms such as Orthogonal Matching Pursuit
+(OMP) <link target-id="bid8"/>, Matching Pursuit (MP) <link target-id="bid15"/>, and
+Tree Matching Pursuit (TMP) <link target-id="bid16"/>, <link target-id="bid17"/> have
+also been proposed to recover the signal <m:math><m:mi>x</m:mi></m:math> from the measurements
+<m:math><m:mi>y</m:mi></m:math> (see <link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->). In CS applications, OMP requires
+<m:math><m:mrow><m:mi>c</m:mi><m:mo>≈</m:mo><m:mn>2</m:mn><m:mo form="prefix">ln</m:mo><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>)</m:mo></m:mrow></m:math><link target-id="bid8"/> to succeed with high
+probability. OMP is also guaranteed to converge within <m:math><m:mi>M</m:mi></m:math>
+iterations. We note that Tropp and
+Gilbert require the OMP algorithm to succeed in the first
+<m:math><m:mi>K</m:mi></m:math> iterations <link target-id="bid8"/>; however, in our
+simulations, we allow the algorithm to run up to the maximum of
+<m:math><m:mi>M</m:mi></m:math> possible iterations.  The choice of an
+appropriate practical stopping criterion (likely somewhere between
+<m:math><m:mi>K</m:mi></m:math> and <m:math><m:mi>M</m:mi></m:math> iterations) is a subject of current
+research in the CS community.</para>
+        </section>
+      </section>
+      <section id="uid14">
+        <title>Impact and applications</title>
+        <para id="id2256868">CS appears to be promising for a number of applications in signal
+acquisition and compression. Instead of sampling a <m:math><m:mi>K</m:mi></m:math>-sparse
+signal <m:math><m:mi>N</m:mi></m:math> times, only <m:math><m:mrow><m:mi>c</m:mi><m:mi>K</m:mi></m:mrow></m:math> incoherent measurements
+suffice, where <m:math><m:mi>K</m:mi></m:math> can be orders of magnitude less than
+<m:math><m:mi>N</m:mi></m:math>. Therefore, a sensor can transmit far fewer measurements to
+a receiver, which can reconstruct the signal and then process it
+in any manner. Moreover, the <m:math><m:mrow><m:mi>c</m:mi><m:mi>K</m:mi></m:mrow></m:math> measurements need not be
+manipulated in any way before being transmitted, except possibly
+for some quantization. Finally, independent and identically
+distributed (i.i.d.) Gaussian or Bernoulli/Rademacher (random
+<m:math><m:mrow><m:mo>±</m:mo><m:mn>1</m:mn></m:mrow></m:math>) vectors provide a useful <emphasis>universal</emphasis> basis that is
+incoherent with all others. Hence, when using a random basis, CS
+is universal in the sense that the sensor can apply the same
+measurement mechanism no matter what basis the signal is sparse in
+(and thus the coding algorithm is independent of the
+sparsity-inducing basis) <link target-id="bid0"/>, <link target-id="bid1"/>, <link target-id="bid18"/>.</para>
+        <para id="id2256981">These features of CS make it particularly intriguing for
+applications in remote sensing environments that might involve
+low-cost battery operated wireless sensors, which have limited
+computational and communication capabilities. Indeed, in many such
+environments one may be interested in sensing a <emphasis>collection</emphasis>
+of signals using a network of low-cost signals. </para>
+        <para id="id2257002">Other possible application areas of CS include
+imaging <link target-id="bid19"/>, medical imaging <link target-id="bid2"/>, <link target-id="bid20"/>,
+and RF environments (where high-bandwidth signals may contain
+low-dimensional structures such as radar
+chirps) <link target-id="bid21"/>. As research continues into practical
+methods for signal recovery (see <link target-id="uid3"/>),
+additional work has focused on developing physical devices for
+acquiring random projections. Our group has developed, for
+example, a prototype digital CS camera based on a digital
+micromirror design <link target-id="bid19"/>. Additional work suggests that
+standard components such as filters (with randomized impulse
+responses) could be useful in CS hardware
+devices <link target-id="bid22"/>.</para>
+      </section>
+      <section id="uid15">
+        <title>The geometry of Compressed Sensing</title>
+        <para id="id2257071">It is important to note that the core theory of CS draws from a
+number of deep geometric arguments. For example, when viewed
+together, the CS encoding/decoding process can be interpreted as a
+linear projection <m:math><m:mrow><m:mi>Φ</m:mi><m:mo>:</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup><m:mo>↦</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:mrow></m:math> followed
+by a nonlinear mapping <m:math><m:mrow><m:mi>Δ</m:mi><m:mo>:</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup><m:mo>↦</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math>.
+In a very general sense, one may naturally ask for a given class
+of signals <m:math><m:mrow><m:mi mathvariant="script">F</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:mrow></m:math> (such as the set of
+<m:math><m:mi>K</m:mi></m:math>-sparse signals or the set of signals with coefficients
+<m:math><m:mrow><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>α</m:mi><m:mo>∥</m:mo></m:mrow><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:msub><m:mo>≤</m:mo><m:mn>1</m:mn></m:mrow></m:math>), what encoder/decoder pair
+<m:math><m:mrow><m:mi>Φ</m:mi><m:mo>,</m:mo><m:mi>Δ</m:mi></m:mrow></m:math> will ensure the best reconstruction (minimax
+distortion) of all signals in <m:math><m:mi mathvariant="script">F</m:mi></m:math>. This best-case
+performance is proportional to what is known as the Gluskin
+<m:math><m:mi>n</m:mi></m:math>-width <link target-id="bid23"/>, <link target-id="bid24"/> of <m:math><m:mi mathvariant="script">F</m:mi></m:math> (in our setting <m:math><m:mrow><m:mi>n</m:mi><m:mo>=</m:mo><m:mi>M</m:mi></m:mrow></m:math>), which in turn has a geometric interpretation. Roughly
+speaking, the Gluskin <m:math><m:mi>n</m:mi></m:math>-width seeks the <m:math><m:mrow><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>-</m:mo><m:mi>n</m:mi><m:mo>)</m:mo></m:mrow></m:math>-dimensional
+slice through <m:math><m:mi mathvariant="script">F</m:mi></m:math> that yields signals of greatest energy.
+This <m:math><m:mi>n</m:mi></m:math>-width bounds the best-case performance of CS on classes
+of compressible signals, and one of the hallmarks of CS is that,
+given a sufficient number of measurements this optimal performance
+is achieved (to within a constant) <link target-id="bid1"/>, <link target-id="bid25"/>.</para>
+        <para id="id2257360">Additionally, one may view the <m:math><m:mrow><m:msub><m:mi>ℓ</m:mi><m:mn>0</m:mn></m:msub><m:mo>/</m:mo><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:mrow></m:math> equivalence problem
+geometrically. In particular, given the measurements <m:math><m:mrow><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:mi>x</m:mi></m:mrow></m:math>,
+we have an <m:math><m:mrow><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>-</m:mo><m:mi>M</m:mi><m:mo>)</m:mo></m:mrow></m:math>-dimensional hyperplane <m:math><m:mrow><m:msub><m:mi mathvariant="script">H</m:mi><m:mi>y</m:mi></m:msub><m:mo>=</m:mo><m:mrow><m:mo>{</m:mo><m:msup><m:mi>x</m:mi><m:mo>'</m:mo></m:msup><m:mo>∈</m:mo><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup><m:mo>:</m:mo><m:mi>y</m:mi><m:mo>=</m:mo><m:mi>Φ</m:mi><m:msup><m:mi>x</m:mi><m:mo>'</m:mo></m:msup><m:mo>}</m:mo></m:mrow><m:mo>=</m:mo><m:mi mathvariant="script">N</m:mi><m:mrow><m:mo>(</m:mo><m:mi>Φ</m:mi><m:mo>)</m:mo></m:mrow><m:mo>+</m:mo><m:mi>x</m:mi></m:mrow></m:math> of
+feasible signals that could account for the measurements <m:math><m:mi>y</m:mi></m:math>.
+Supposing the original signal <m:math><m:mi>x</m:mi></m:math> is <m:math><m:mi>K</m:mi></m:math>-sparse, the
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math> recovery program will recover the correct solution <m:math><m:mi>x</m:mi></m:math> if
+and only if <m:math><m:mrow><m:mrow><m:mo>∥</m:mo></m:mrow><m:msup><m:mi>x</m:mi><m:mo>'</m:mo></m:msup><m:msub><m:mrow><m:mo>∥</m:mo></m:mrow><m:mn>1</m:mn></m:msub><m:mo>&gt;</m:mo><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>x</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>1</m:mn></m:msub></m:mrow></m:math> for every other signal <m:math><m:mrow><m:msup><m:mi>x</m:mi><m:mo>'</m:mo></m:msup><m:mo>∈</m:mo><m:msub><m:mi mathvariant="script">H</m:mi><m:mi>y</m:mi></m:msub></m:mrow></m:math> on the hyperplane. This happens only if the
+hyperplane <m:math><m:msub><m:mi mathvariant="script">H</m:mi><m:mi>y</m:mi></m:msub></m:math> (which passes through <m:math><m:mi>x</m:mi></m:math>) does not
+“cut into” the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math>-ball of radius <m:math><m:msub><m:mrow><m:mo>∥</m:mo><m:mi>x</m:mi><m:mo>∥</m:mo></m:mrow><m:mn>1</m:mn></m:msub></m:math>. This
+<m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math>-ball is a polytope, on which <m:math><m:mi>x</m:mi></m:math> belongs to a
+<m:math><m:mrow><m:mo>(</m:mo><m:mi>K</m:mi><m:mo>-</m:mo><m:mn>1</m:mn><m:mo>)</m:mo></m:mrow></m:math>-dimensional “face.” If <m:math><m:mi>Φ</m:mi></m:math> is a random
+matrix with i.i.d. Gaussian entries, then the hyperplane
+<m:math><m:msub><m:mi mathvariant="script">H</m:mi><m:mi>y</m:mi></m:msub></m:math> will have random orientation. To answer the
+question of how <m:math><m:mi>M</m:mi></m:math> must relate to <m:math><m:mi>K</m:mi></m:math> in order to
+ensure reliable recovery, it helps to observe that a randomly
+generated hyperplane <m:math><m:mi mathvariant="script">H</m:mi></m:math> will have greater chance to
+slice into the <m:math><m:msub><m:mi>ℓ</m:mi><m:mn>1</m:mn></m:msub></m:math> ball as <m:math><m:mrow><m:mi> dim </m:mi><m:mo>(</m:mo><m:mi mathvariant="script">H</m:mi><m:mo>)</m:mo><m:mo>=</m:mo><m:mi>N</m:mi><m:mo>-</m:mo><m:mi>M</m:mi></m:mrow></m:math> grows (or as <m:math><m:mi>M</m:mi></m:math> shrinks) or as the dimension
+<m:math><m:mrow><m:mi>K</m:mi><m:mo>-</m:mo><m:mn>1</m:mn></m:mrow></m:math> of the face on which <m:math><m:mi>x</m:mi></m:math> lives grows. Such geometric
+arguments have been made precise by Donoho and
+Tanner <link target-id="bid13"/>, <link target-id="bid12"/>, <link target-id="bid14"/> and used to
+establish a series of sharp bounds on CS recovery.</para>
+        
+      </section>
+      <section id="uid16"><title>Connections with dimensionality reduction</title>
+        
+        <para id="id2257918">We have also identified <link target-id="bid18"/> a fundamental connection
+between the CS and the JL lemma. In order to make this connection,
+we considered the <emphasis>Restricted Isometry Property</emphasis> (RIP), which
+has been identified as a key property of the CS projection
+operator <m:math><m:mi>Φ</m:mi></m:math> to ensure stable signal recovery. We say <m:math><m:mi>Φ</m:mi></m:math>
+has RIP of order <m:math><m:mi>K</m:mi></m:math> if for every <m:math><m:mi>K</m:mi></m:math>-sparse
+signal <m:math><m:mi>x</m:mi></m:math>,
+        <equation id="id2257985"><m:math mode="display">
+            <m:mrow>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>-</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>≤</m:mo>
+              <m:mfrac>
+                <m:msub>
+                  <m:mfenced separators="" open="∥" close="∥">
+                    <m:mi>Φ</m:mi>
+                    <m:mi>x</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+                <m:msub>
+                  <m:mfenced open="∥" close="∥">
+                    <m:mi>x</m:mi>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+              </m:mfrac>
+              <m:mo>≤</m:mo>
+              <m:mrow>
+                <m:mo>(</m:mo>
+                <m:mn>1</m:mn>
+                <m:mo>+</m:mo>
+                <m:mi>ϵ</m:mi>
+                <m:mo>)</m:mo>
+              </m:mrow>
+              <m:msqrt>
+                <m:mfrac>
+                  <m:mi>M</m:mi>
+                  <m:mi>N</m:mi>
+                </m:mfrac>
+              </m:msqrt>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+        A random <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix with i.i.d. Gaussian entries
+can be shown to have this property with high probability if <m:math><m:mrow><m:mi>M</m:mi><m:mo>=</m:mo><m:mi>O</m:mi><m:mo>(</m:mo><m:mi>K</m:mi><m:mo form="prefix">log</m:mo><m:mo>(</m:mo><m:mi>N</m:mi><m:mo>/</m:mo><m:mi>K</m:mi><m:mo>)</m:mo><m:mo>)</m:mo></m:mrow></m:math>.</para>
+        <para id="id2258131">While the JL lemma concerns pairwise distances within a finite
+cloud of points, the RIP concerns isometric embedding of an <emphasis>infinite</emphasis> number of points (comprising a union of
+<m:math><m:mi>K</m:mi></m:math>-dimensional subspaces in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>). However, the
+RIP can in fact be derived by constructing an effective <emphasis>sampling</emphasis> of <m:math><m:mi>K</m:mi></m:math>-sparse signals in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>, using the
+JL lemma to ensure isometric embeddings for each of these points,
+and then arguing that the RIP must hold true for <emphasis>all</emphasis>  <m:math><m:mi>K</m:mi></m:math>-sparse signals. (See <link target-id="bid18"/> for the full
+details.)</para>
+        
+      </section><section id="element-378"><title>Stable embeddings of manifolds</title><para id="element-167">
+Finally, we have also shown that the JL lemma can also lead to extensions of CS to other concise
+signal models. In particular, while conventional CS theory concerns sparse signal models, it is also
+possible to consider manifold-based signal models. Just as random projections can preserve the low-
+dimensional geometry (the union of hyperplanes) that corresponds to a sparse signal family, random
+projections can also guarantee a stable embedding of a low-dimensional signal manifold. We have
+the following result, which states that an RIP-like property holds for families of manifold-modeled
+signals.
+</para>
+<rule id="theorem122" type="Theorem"><label>Theorem</label><statement id="id44262626">
+<para id="id09820394">Let <m:math>
+<m:mi mathvariant="script">M</m:mi>
+</m:math> be a compact <m:math>
+<m:mi>K</m:mi>
+</m:math>-dimensional Riemannian submanifold of <m:math>
+<m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup>
+</m:math> having condition
+number <m:math>
+<m:mfrac>
+<m:mn>1</m:mn>
+<m:mi>τ</m:mi>
+</m:mfrac>
+</m:math> , volume <m:math>
+<m:mi>V</m:mi>
+</m:math>, and geodesic covering regularity <m:math>
+<m:mi>R</m:mi>
+</m:math>. Fix 
+<m:math>
+<m:mn>0</m:mn>
+<m:mo>&lt;</m:mo>
+<m:mi>ϵ</m:mi>
+<m:mo>&lt;</m:mo>
+<m:mn>1</m:mn>
+<m:mtext>and</m:mtext>
+<m:mn>0</m:mn>
+<m:mo>&lt;</m:mo>
+<m:mo>ρ</m:mo>
+<m:mo>&lt;</m:mo>
+<m:mn>1</m:mn>
+</m:math>.
+Let Φ be a random M × N orthoprojector with
+<equation id="element-892379827">
+<m:math>
+<m:mi>M</m:mi>
+<m:mo>=</m:mo>
+<m:mi>O</m:mi>
+<m:mo>(</m:mo>
+<m:mfrac>
+<m:mrow>
+<m:mi>K</m:mi>
+<m:mtext>log</m:mtext>
+<m:mo>(</m:mo>
+<m:mi>N</m:mi>
+<m:mi>V</m:mi>
+<m:mi>R</m:mi>
+<m:msup>
+<m:mi>τ</m:mi>
+<m:mn>-1</m:mn>
+</m:msup>
+<m:msup>
+<m:mi>ϵ</m:mi>
+<m:mn>-1</m:mn>
+</m:msup>
+<m:mo>)</m:mo>
+<m:mtext>log</m:mtext>
+<m:mo>(</m:mo>
+<m:mfrac>
+<m:mn>1</m:mn>
+<m:mi>ρ</m:mi>
+</m:mfrac>
+<m:mo>)</m:mo>
+</m:mrow>
+<m:mrow>
+<m:msup>
+<m:mi>ϵ</m:mi>
+<m:mn>2</m:mn>
+</m:msup>
+</m:mrow>
+</m:mfrac>
+<m:mo>)</m:mo>
+</m:math>
+</equation>
+If <m:math>
+<m:mi>M</m:mi>
+<m:mo>≤</m:mo>
+<m:mi>N</m:mi>
+</m:math>, then with probability at least <m:math>
+<m:mn>1</m:mn>
+<m:mo>−</m:mo>
+<m:mi>ρ</m:mi>
+</m:math> the following statement holds: For every pair of
+points 
+<m:math>
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>1</m:mn>
+</m:msub>
+</m:math>, 
+<m:math>
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>2</m:mn>
+</m:msub>
+<m:mi>∈</m:mi>
+<m:mi mathvariant="script">M</m:mi>
+</m:math>,
+<equation id="uid4352452"><m:math>
+<m:mo>(</m:mo>
+<m:mn>1</m:mn>
+<m:mo>-</m:mo>
+<m:mi>ϵ</m:mi>
+<m:mo>)</m:mo>
+<m:msqrt>
+<m:mfrac>
+<m:mi>M</m:mi>
+<m:mi>N</m:mi>
+</m:mfrac>
+</m:msqrt>
+<m:mo>≤</m:mo>
+<m:mfrac>
+
+<m:mrow>
+<m:msub>
+<m:mfenced separators="" open="∥" close="∥">
+<m:mi>Φ</m:mi>
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>1</m:mn>
+</m:msub>
+<m:mo>-</m:mo>
+<m:mi>Φ</m:mi>
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>2</m:mn>
+</m:msub>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+</m:mrow>
+
+<m:mrow>
+<m:msub>
+<m:mfenced separators="" open="∥" close="∥">
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>1</m:mn>
+</m:msub>
+<m:mo>-</m:mo>
+<m:msub>
+<m:mi>x</m:mi>
+<m:mn>2</m:mn>
+</m:msub>
+                  </m:mfenced>
+                  <m:mn>2</m:mn>
+                </m:msub>
+</m:mrow>
+</m:mfrac>
+
+<m:mo>≤</m:mo>
+<m:mo>(</m:mo>
+<m:mn>1</m:mn>
+<m:mo>+</m:mo>
+<m:mi>ϵ</m:mi>
+<m:mo>)</m:mo>
+<m:msqrt>
+<m:mfrac>
+<m:mi>M</m:mi>
+<m:mi>N</m:mi>
+</m:mfrac>
+</m:msqrt>
+</m:math>
+</equation></para>
+</statement>
+</rule><para id="element-111">The proof of this theorem appears in <link target-id="bid101"/> and again involves the JL lemma. Due to the limited
+complexity of a manifold model, it is possible to adequately characterize the geometry using a
+sufficiently fine sampling of points drawn from the manifold and its tangent spaces. In essence,
+manifolds with higher volume or with greater curvature have more complexity and require a more
+dense covering for application of the JL lemma; this leads to an increased number of measurements. The theorem also indicates that the requisite number of measurements depends on the geodesic covering regularity of the manifold, a minor technical concept which is also discussed in <link target-id="bid101"/>.</para>
+
+
+<para id="eip-id1166364721527">This theorem establishes that, like the class of <m:math>
+<m:mi>K</m:mi>
+</m:math>-sparse signals, a collection of signals described
+by a <m:math>
+<m:mi>K</m:mi>
+</m:math>-dimensional manifold <m:math>
+<m:mi mathvariant="script">M</m:mi>
+<m:mi>⊂</m:mi>
+<m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup>
+</m:math> can have a stable embedding in an <m:math><m:mi>M</m:mi></m:math>-dimensional measurement space. Moreover, the requisite number of random measurements <m:math>
+<m:mi>M</m:mi>
+</m:math> is once again linearly
+proportional to the information level (or number of degrees of freedom) <m:math>
+<m:mi>K</m:mi>
+</m:math> in the concise model.
+This has a number of possible implications for manifold-based signal processing. Manifold-modeled
+signals can be recovered from compressive measurements (using a customized recovery algorithm
+adapted to the manifold model, in contrast with sparsity-based recovery algorithms) <link target-id="bid102"/>, <link target-id="bid104"/>; unknown
+parameters in parametric models can be estimated from compressive measurements; multi-class estimation/classification problems can be addressed <link target-id="bid102"/> by considering multiple manifold models; and
+manifold learning algorithms may be efficiently executed by applying them simply to the projection of a manifold-modeled data set to a low-dimensional measurement space <link target-id="bid103"/>. (As an example,  <link target-id="fs-id4895761" document="m18732"/>(d) shows the result of applying the ISOMAP algorithm on a random projection of a data set from <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>4096</m:mn></m:msup></m:math> down to <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>15</m:mn></m:msup></m:math>; the underlying parameterization of the manifold is extracted with little sacrifice in accuracy.)
+
+In all of this it is
+not necessary to adapt the sensing protocol to the model; the only change from sparsity-based CS
+would be the methods for processing or decoding the measurements. In the future, more sophisticated concise models will likely lead to further improvements in signal understanding from compressive measurements.</para></section>
+    
+  </content>
+  <bib:file>
+<bib:entry id="bid101">
+         <bib:article>
+   <!--required fields-->
+           <bib:author>R. G. Baraniuk and M. B. Wakin</bib:author>
+           <bib:title>Random Projections of Smooth Manifolds</bib:title>
+           <bib:journal>Foundations of Computational Mathematics</bib:journal>
+           <bib:year>2008</bib:year>
+   <!--optional fields-->
+           <bib:volume/>
+           <bib:number/>
+           <bib:pages/>
+           <bib:month/>
+           <bib:note>To Appear</bib:note>
+         </bib:article>
+       </bib:entry>
+<bib:entry id="bid102">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author> Davenport, M.A. and Duarte, M.F. and Wakin, M.B. and Laska, J.N. and Takhar, D. and Kelly, K.F. and Baraniuk, R.G.</bib:author>
+        <bib:title>The smashed filter for compressive classification and target recognition</bib:title>
+        <bib:booktitle> Proc. Computational Imaging V at SPIE Electronic Imaging</bib:booktitle>
+        <bib:year>2007</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address> </bib:address>
+        <bib:month> January</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+
+<bib:entry id="bid103">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author> C. Hegde, M.B. Wakin, and R.G. Baraniuk.</bib:author>
+        <bib:title>Random projections for manifold learning.</bib:title>
+        <bib:booktitle> In Proc.
+Neural Information Processing Systems (NIPS)</bib:booktitle>
+        <bib:year>2007</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address> </bib:address>
+        <bib:month>December</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+
+ <bib:entry id="bid104">
+      <bib:phdthesis>
+<!--required fields-->
+        <bib:author>M. B. Wakin</bib:author>
+        <bib:title>The Geometry of Low-Dimensional Signal Models</bib:title>
+        <bib:school>Rice University</bib:school>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:type>Ph. D. Thesis, Department of
+Electrical and Computer Engineering</bib:type>
+        <bib:address>Houston, Tx</bib:address>
+        <bib:month>August</bib:month>
+        <bib:note/>
+      </bib:phdthesis>
+    </bib:entry>
+
+<bib:entry id="bid100">
+         <bib:article>
+   <!--required fields-->
+           <bib:author>D. Baron and M. B. Wakin and M. F. Duarte and S. Sarvotham 
+and R. G. Baraniuk</bib:author>
+           <bib:title>Distributed compressed sensing</bib:title>
+           <bib:journal/>
+           <bib:year>2005</bib:year>
+   <!--optional fields-->
+           <bib:volume/>
+           <bib:number/>
+           <bib:pages/>
+           <bib:month/>
+           <bib:note>Preprint</bib:note>
+         </bib:article>
+       </bib:entry>
+
+    <bib:entry id="bid18">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Baraniuk, R. and Davenport, M. and DeVore, R. and Wakin, M.</bib:author>
+        <bib:title>The Johnson-Lindenstrauss Lemma Meets Compressed Sensing</bib:title>
+        <bib:journal/>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid10">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Chen, S. and Donoho, D. and Saunders, M.</bib:author>
+        <bib:title>Atomic decomposition by basis pursuit</bib:title>
+        <bib:journal>SIAM J. on Sci. Comp.</bib:journal>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:volume>20</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages>33-61</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Romberg, J.</bib:author>
+        <bib:title>Practical signal recovery from random projections</bib:title>
+        <bib:journal/>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Romberg, J.</bib:author>
+        <bib:title>Quantitative robust uncertainty principles and optimally sparse decompositions</bib:title>
+        <bib:journal>Found. of Comp. Math.</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Romberg, J. and Tao, T.</bib:author>
+        <bib:title>Robust uncertainty principles: Exact signal reconstruction from highly incomplete frequency information</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume>52</bib:volume>
+        <bib:number>2</bib:number>
+        <bib:pages/>
+        <bib:month>February</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Romberg, J. and Tao, T.</bib:author>
+        <bib:title>Stable signal recovery from incomplete and inaccurate measurements</bib:title>
+        <bib:journal>Communications on Pure and Applied Mathematics</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Tao, T.</bib:author>
+        <bib:title>Decoding by linear programming</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume>51</bib:volume>
+        <bib:number>12</bib:number>
+        <bib:pages/>
+        <bib:month>December</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid11">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Tao, T.</bib:author>
+        <bib:title>Error correction via linear programming</bib:title>
+        <bib:journal>Found. of Comp. Math.</bib:journal>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Tao, T.</bib:author>
+        <bib:title>Near optimal signal recovery from random projections and universal encoding strategies</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>To appear</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid21">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Duarte, M. F. and Davenport, M. A. and Wakin, M. B. and Baraniuk, R. G.</bib:author>
+        <bib:title>Sparse Signal Detection From Incoherent Projections</bib:title>
+        <bib:booktitle>Proc. Int. Conf. Acoustics, Speech, Signal Processing (ICASSP)</bib:booktitle>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month>May</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid25">
+      <bib:article>
+<!--required fields-->
+        <bib:author>DeVore, R. A.</bib:author>
+        <bib:title>Lecture notes on Compressed Sensing</bib:title>
+        <bib:journal>Rice University ELEC 631 Course Notes</bib:journal>
+        <bib:year>Spring 2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid13">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D.</bib:author>
+        <bib:title>High-dimensional centrally symmetric polytopes with neighborliness proportional to dimension</bib:title>
+        <bib:journal/>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month>January</bib:month>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D.</bib:author>
+        <bib:title>Compressed sensing</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:volume>52</bib:volume>
+        <bib:number>4</bib:number>
+        <bib:pages/>
+        <bib:month>April</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid7">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. and Tsaig, Y.</bib:author>
+        <bib:title>Extensions of compressed sensing</bib:title>
+        <bib:journal/>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid12">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. and Tanner, J.</bib:author>
+        <bib:title>Neighborliness of randomly-projected simplices in high dimensions</bib:title>
+        <bib:journal/>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid14">
+      <bib:techreport>
+<!--required fields-->
+        <bib:author>Donoho, D. L. and Tanner, J.</bib:author>
+        <bib:title>Counting faces of randomly-projected polytopes when then projection radically lowers dimension</bib:title>
+        <bib:institution>Stanford University Department of Statistics</bib:institution>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:type>Technical report</bib:type>
+        <bib:number>2006-11</bib:number>
+        <bib:address/>
+        <bib:month/>
+        <bib:note/>
+      </bib:techreport>
+    </bib:entry>
+    <bib:entry id="bid16">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Duarte, M. F. and Wakin, M. B. and Baraniuk, R. G.</bib:author>
+        <bib:title>Fast Reconstruction of Piecewise Smooth Signals from Random Projections</bib:title>
+        <bib:booktitle>Proc. SPARS05</bib:booktitle>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>Rennes, France</bib:address>
+        <bib:month>Nov.</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid24">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Garnaev, A. and Gluskin, E. D.</bib:author>
+        <bib:title>The widths of Euclidean balls</bib:title>
+        <bib:journal>Doklady An. SSSR.</bib:journal>
+        <bib:year>1984</bib:year>
+<!--optional fields-->
+        <bib:volume>277</bib:volume>
+        <bib:number/>
+        <bib:pages>1048-1052</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid23">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Kashin, B.</bib:author>
+        <bib:title>The widths of certain finite dimensional sets and classes of smooth functions</bib:title>
+        <bib:journal>Izvestia</bib:journal>
+        <bib:year>1977</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number>41</bib:number>
+        <bib:pages>334-351</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid17">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>La, C. and Do, M. N.</bib:author>
+        <bib:title>Signal reconstruction using sparse tree representation</bib:title>
+        <bib:booktitle>Proc. Wavelets XI at SPIE Optics and Photonics</bib:booktitle>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>San Diego</bib:address>
+        <bib:month>August</bib:month>
+        <bib:organization/>
+        <bib:publisher>SPIE</bib:publisher>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid20">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Lustig, M. and Donoho, D. L. and Pauly, J. M.</bib:author>
+        <bib:title>Rapid MR Imaging with Compressed Sensing and Randomly Under-Sampled 3DFT Trajectories</bib:title>
+        <bib:booktitle>Proc. 14th Ann. Mtg. ISMRM</bib:booktitle>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month>May</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid15">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Mallat, S.</bib:author>
+        <bib:title>A wavelet tour of signal processing</bib:title>
+        <bib:publisher>Academic Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>San Diego, CA, USA</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid19">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Takhar, D. and Bansal, V. and Wakin, M. and Duarte, M. and Baron, D. and Kelly, K. F. and Baraniuk, R. G.</bib:author>
+        <bib:title>A Compressed Sensing Camera: New Theory and an Implementation using Digital Micromirrors</bib:title>
+        <bib:booktitle>Proc. Computational Imaging IV at SPIE Electronic Imaging</bib:booktitle>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>San Jose</bib:address>
+        <bib:month>January</bib:month>
+        <bib:organization/>
+        <bib:publisher>SPIE</bib:publisher>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid8">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Tropp, J. and Gilbert, A. C.</bib:author>
+        <bib:title>Signal recovery from partial information via orthogonal matching pursuit</bib:title>
+        <bib:journal/>
+        <bib:year>2005</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month>April</bib:month>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid22">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Tropp, J. A. and Wakin, M. B. and Duarte, M. F. and Baron, D. and Baraniuk, R. G.</bib:author>
+        <bib:title>Random Filters For Compressive Sampling And Reconstruction</bib:title>
+        <bib:booktitle>Proc. Int. Conf. Acoustics, Speech, Signal Processing (ICASSP)</bib:booktitle>
+        <bib:year>2006</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month>May</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid9">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Venkataramani, R. and Bresler, Y.</bib:author>
+        <bib:title>Further results on spectrum blind sampling of 2D signals</bib:title>
+        <bib:booktitle>Proc. IEEE Int. Conf. Image Proc. (ICIP)</bib:booktitle>
+        <bib:year>1998</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:volume>2</bib:volume>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address>Chicago</bib:address>
+        <bib:month>Oct.</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+  </bib:file>
+</document>

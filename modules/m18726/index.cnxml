@@ -1,0 +1,612 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml" xmlns:bib="http://bibtexml.sf.net/">
+  <title>Low-Dimensional Signal Models</title>
+  <metadata>
+  <md:content-id>m18726</md:content-id><md:title>Low-Dimensional Signal Models</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>d0cf87f9-f6cd-414a-bf26-6e60c6c57875</md:uuid>
+</metadata>
+
+<content>
+    
+      <para id="id2253734">We now survey some common and important models in signal
+processing, each of which involves some notion of conciseness to
+the signal structure. We see in each case that this conciseness
+gives rise to a low-dimensional geometry within the ambient signal
+space.</para>
+      <section id="uid1">
+        <title>Linear models</title>
+        <para id="id2253749">Some of the simplest models in signal processing correspond to
+<emphasis>linear subspaces</emphasis> of the ambient signal space.
+Bandlimited signals are one such example. Supposing, for example,
+that a <m:math><m:mrow><m:mn>2</m:mn><m:mi>π</m:mi></m:mrow></m:math>-periodic signal <m:math><m:mi>f</m:mi></m:math> has Fourier transform <m:math><m:mrow><m:mi>F</m:mi><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo><m:mo>=</m:mo><m:mn>0</m:mn></m:mrow></m:math> for <m:math><m:mrow><m:mo>|</m:mo><m:mi>ω</m:mi><m:mo>|</m:mo><m:mo>&gt;</m:mo><m:mi>B</m:mi></m:mrow></m:math>, the Shannon/Nyquist sampling
+theorem <link target-id="bid0"/> states that such signals can be
+reconstructed from <m:math><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi></m:mrow></m:math> samples. Because the space of
+<m:math><m:mi>B</m:mi></m:math>-bandlimited signals is closed under addition and scalar
+multiplication, it follows that the set of such signals forms a
+<m:math><m:mrow><m:mn>2</m:mn><m:mi>B</m:mi></m:mrow></m:math>-dimensional linear subspace of <m:math><m:mrow><m:msup><m:mi>L</m:mi><m:mn>2</m:mn></m:msup><m:mrow><m:mo>(</m:mo><m:mrow><m:mo>[</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>2</m:mn><m:mi>π</m:mi><m:mo>)</m:mo></m:mrow><m:mo>)</m:mo></m:mrow></m:mrow></m:math>.</para>
+        <para id="id2253073">Linear signal models also appear in cases where a model dictates a
+<emphasis>linear constraint</emphasis> on a signal. Considering a discrete
+length-<m:math><m:mi>N</m:mi></m:math> signal <m:math><m:mi>x</m:mi></m:math>, for example, such a constraint can be
+written in matrix form as
+<equation id="uid69898234">
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>A</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>=</m:mo>
+              <m:mn>0</m:mn>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+
+for some <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix <m:math><m:mi>A</m:mi></m:math>. Signals obeying such a
+model are constrained to live in <m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mi>A</m:mi><m:mo>)</m:mo></m:mrow></m:math> (again,
+obviously, a linear subspace of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>).</para>
+        
+        
+        <para id="id2254254">A very similar class of models concerns signals living in an
+affine space, which can be represented for a discrete signal using
+<equation id="uid9898732">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:mi>A</m:mi>
+              <m:mi>x</m:mi>
+              <m:mo>=</m:mo>
+              <m:mi>y</m:mi>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+The class of such <m:math><m:mi>x</m:mi></m:math> lives in a shifted nullspace <m:math><m:mrow><m:mover accent="true"><m:mi>x</m:mi><m:mo>^</m:mo></m:mover><m:mo>+</m:mo><m:mi mathvariant="script">N</m:mi><m:mrow><m:mo>(</m:mo><m:mi>A</m:mi><m:mo>)</m:mo></m:mrow></m:mrow></m:math>, where <m:math><m:mover accent="true"><m:mi>x</m:mi><m:mo>^</m:mo></m:mover></m:math> is any solution to the
+equation <m:math><m:mrow><m:mi>A</m:mi><m:mover accent="true"><m:mi>x</m:mi><m:mo>^</m:mo></m:mover><m:mo>=</m:mo><m:mi>y</m:mi></m:mrow></m:math>.</para>
+        
+        
+        <para id="id2254361">Revisiting the dictionary setting (see <link document="m18724">Signal Dictionaries and Representations</link>)<!--Section 2.3-->,
+one last important linear model arises in cases where we select
+<m:math><m:mi>K</m:mi></m:math> specific elements from the dictionary <m:math><m:mi>Ψ</m:mi></m:math> and then
+construct signals using linear combinations of only these
+<m:math><m:mi>K</m:mi></m:math> elements; in this case the set of possible signals
+forms a <m:math><m:mi>K</m:mi></m:math>-dimensional hyperplane in the ambient signal
+space (see <link target-id="uid2"/>(a)).</para>
+        <figure id="uid2" orient="vertical"><subfigure id="id2254482">
+            <media id="id7297788" alt=""><image src="../../media/mbFrameLA-feec.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameLA.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure>
+<subfigure id="id2254488">
+            <media id="id10986261" alt=""><image src="../../media/mbFrameNLA-e29c.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameNLA.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure>
+<subfigure id="id2254494">
+            <media id="id10175746" alt=""><image src="../../media/mbFrameManifold-aa51.png" mime-type="image/png" width="300"/><image for="pdf" src="../../media/mbFrameManifold.eps" mime-type="application/postscript" print-width="2in"/></media>
+          </subfigure><caption>Simple models for
+signals in <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mn>2</m:mn></m:msup></m:math>. (a) The linear space spanned by one element
+of the dictionary <m:math><m:mi>Ψ</m:mi></m:math>. The bold vectors denote the elements of the dictionary, while the dashed line (plus the corresponding dictionary element) denotes the subspace spanned by that dictionary element. (b) The nonlinear set of 1-sparse
+signals that can be built using <m:math><m:mi>Ψ</m:mi></m:math>. (c) A manifold
+<m:math><m:mi mathvariant="script">M</m:mi></m:math>.
+
+</caption></figure>
+        <para id="id2254501">For example, we may construct low-frequency signals using
+combinations of only the lowest frequency sinusoids from the
+Fourier dictionary. Similar subsets may be chosen from the wavelet
+dictionary; in particular, one may choose only elements that span
+a particular scaling space <m:math><m:msub><m:mi>V</m:mi><m:mi>j</m:mi></m:msub></m:math>. As we have mentioned previously,
+harmonic dictionaries such as sinusoids and wavelets are
+well-suited to representing smooth<footnote id="eip-id45768524">
+<emphasis effect="bold">Lipschitz smoothness</emphasis>
+        We say a continuous-time function of <m:math><m:mi>D</m:mi></m:math> variables has
+smoothness of order <m:math><m:mrow><m:mi>H</m:mi><m:mo>&gt;</m:mo><m:mn>0</m:mn></m:mrow></m:math>, where <m:math><m:mrow><m:mi>H</m:mi><m:mo>=</m:mo><m:mi>r</m:mi><m:mo>+</m:mo><m:mi>ν</m:mi></m:mrow></m:math>, <m:math><m:mi>r</m:mi></m:math> is an integer,
+and <m:math><m:mrow><m:mi>ν</m:mi><m:mo>∈</m:mo><m:mo>(</m:mo><m:mn>0</m:mn><m:mo>,</m:mo><m:mn>1</m:mn><m:mo>]</m:mo></m:mrow></m:math>, if the following criteria are
+met <link target-id="bid0"/>, <link target-id="bid1"/>:
+        <list id="id2255047" list-type="bulleted">
+          <item id="uid5234242">All iterated partial derivatives with respect to the
+<m:math><m:mi>D</m:mi></m:math> directions up to order <m:math><m:mi>r</m:mi></m:math> exist and are
+continuous.
+</item>
+          <item id="uid62423234">All such partial derivatives of order
+<m:math><m:mi>r</m:mi></m:math> satisfy a Lipschitz condition of order
+<m:math><m:mi>ν</m:mi></m:math> (also known as a Hölder
+condition).(A function <m:math><m:mrow><m:mi>d</m:mi><m:mo>∈</m:mo><m:mspace width="4.pt"/><m:mtext>Lip</m:mtext><m:mo>(</m:mo><m:mi>ν</m:mi><m:mo>)</m:mo></m:mrow></m:math> if <m:math><m:mrow><m:mrow><m:mo>|</m:mo><m:mi>d</m:mi></m:mrow><m:mrow><m:mo>(</m:mo><m:msub><m:mi>t</m:mi><m:mn>1</m:mn></m:msub><m:mo>+</m:mo><m:msub><m:mi>t</m:mi><m:mn>2</m:mn></m:msub><m:mo>)</m:mo></m:mrow><m:mo>-</m:mo><m:mi>d</m:mi><m:mrow><m:mo>(</m:mo><m:msub><m:mi>t</m:mi><m:mn>1</m:mn></m:msub><m:mo>)</m:mo></m:mrow><m:mrow><m:mo>|</m:mo><m:mo>≤</m:mo><m:mi>C</m:mi><m:mo>∥</m:mo></m:mrow><m:msub><m:mi>t</m:mi><m:mn>2</m:mn></m:msub><m:msup><m:mrow><m:mo>∥</m:mo></m:mrow><m:mi>ν</m:mi></m:msup></m:mrow></m:math> for all <m:math><m:mi>D</m:mi></m:math>-dimensional vectors
+<m:math><m:mrow><m:msub><m:mi>t</m:mi><m:mn>1</m:mn></m:msub><m:mo>,</m:mo><m:msub><m:mi>t</m:mi><m:mn>2</m:mn></m:msub></m:mrow></m:math>.)</item>
+        </list>
+ We will sometimes consider the space of smooth functions whose
+partial derivatives up to order <m:math><m:mi>r</m:mi></m:math> are bounded by
+some constant <m:math><m:mi>Ω</m:mi></m:math>. With somewhat nonstandard notation, we denote the space of such bounded
+functions with bounded partial derivatives by
+<m:math><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:math>, where this notation carries an implicit
+dependence on <m:math><m:mi>Ω</m:mi></m:math>. Observe that <m:math><m:mrow><m:mi>r</m:mi><m:mo>=</m:mo><m:mo>⌈</m:mo><m:mi>H</m:mi><m:mo>-</m:mo><m:mn>1</m:mn><m:mo>⌉</m:mo></m:mrow></m:math>, where <m:math><m:mrow><m:mo>⌈</m:mo><m:mo>·</m:mo><m:mo>⌉</m:mo></m:mrow></m:math> denotes rounding
+up. Also, when <m:math><m:mi>H</m:mi></m:math> is an integer <m:math><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:math>
+includes as a subset the space traditionally denoted by the notation “<m:math><m:msup><m:mi>C</m:mi><m:mi>H</m:mi></m:msup></m:math>” (the
+class of functions that have <m:math><m:mrow><m:mi>H</m:mi><m:mo>=</m:mo><m:mi>r</m:mi><m:mo>+</m:mo><m:mn>1</m:mn></m:mrow></m:math>
+continuous partial derivatives).</footnote>
+
+signals. This can be seen in
+the decay of their transform coefficients. For example, we can
+relate the smoothness of a continuous 1-D function <m:math><m:mi>f</m:mi></m:math> to the
+decay of its Fourier coefficients <m:math><m:mrow><m:mi>F</m:mi><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow></m:math>; in particular, if
+<m:math><m:mrow><m:mo>∫</m:mo><m:mo>|</m:mo><m:mi>F</m:mi><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow><m:mo>|</m:mo><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>+</m:mo><m:mo>|</m:mo><m:mi>ω</m:mi><m:msup><m:mo>|</m:mo><m:mi>H</m:mi></m:msup><m:mo>)</m:mo><m:mi>d</m:mi><m:mi>ω</m:mi><m:mo>&lt;</m:mo><m:mi>∞</m:mi></m:mrow></m:math>,
+then <m:math><m:mrow><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:mrow></m:math> <link target-id="bid0"/>. 
+
+In order to satisfy 
+<m:math><m:mrow><m:mo>∫</m:mo><m:mo>|</m:mo><m:mi>F</m:mi><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow><m:mo>|</m:mo><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>+</m:mo><m:mo>|</m:mo><m:mi>ω</m:mi><m:msup><m:mo>|</m:mo><m:mi>H</m:mi></m:msup><m:mo>)</m:mo><m:mi>d</m:mi><m:mi>ω</m:mi><m:mo>&lt;</m:mo><m:mi>∞</m:mi></m:mrow></m:math>, a signal must have a sufficiently fast decay of the Fourier transform coefficients <m:math><m:mrow><m:mo>|</m:mo><m:mi>F</m:mi><m:mrow><m:mo>(</m:mo><m:mi>ω</m:mi><m:mo>)</m:mo></m:mrow><m:mo>|</m:mo></m:mrow></m:math> as <m:math>
+<m:mi>ω</m:mi></m:math> grows.
+
+Wavelet coefficients exhibit a similar decay for smooth signals:
+supposing <m:math><m:mrow><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:mrow></m:math> and the wavelet basis
+function has at least <m:math><m:mi>H</m:mi></m:math> vanishing moments, then as the
+scale <m:math><m:mrow><m:mi>j</m:mi><m:mo>→</m:mo><m:mi>∞</m:mi></m:mrow></m:math>, the magnitudes of the wavelet coefficients
+decay
+as <m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi><m:mo>(</m:mo><m:mi>H</m:mi><m:mo>+</m:mo><m:mn>1</m:mn><m:mo>/</m:mo><m:mn>2</m:mn><m:mo>)</m:mo></m:mrow></m:msup></m:math> <link target-id="bid0"/>. (Recall that <m:math><m:mrow><m:mi>f</m:mi><m:mo>∈</m:mo><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:mrow></m:math>
+implies <m:math><m:mi>f</m:mi></m:math> is well-approximated by a polynomial, and so due the
+vanishing moments this polynomial will have zero contribution to
+the wavelet coefficients.)</para><para id="eip-416">Indeed, these results suggest that the
+largest Fourier or wavelet coefficients of smooth signals tend to concentrate at the coarsest scales (lowest-frequencies). In <link document="m18727" target-id="uid1">Linear Approximation from Approximation</link> <!--Section 2.5.1-->, we see
+that linear approximations formed from just the lowest frequency
+elements of the Fourier or wavelet dictionaries (i.e., the truncation of the Fourier or wavelet representation to only the lowest frequency terms) provide very
+accurate approximations to smooth signals. Put differently, smooth signals live near the subspace spanned by just the lowest frequency Fourier or wavelet basis functions.</para>
+      </section>
+      <section id="uid3">
+        <title>Sparse (nonlinear) models</title>
+        <para id="id2254774">Sparse signal models can be viewed as a generalization of linear
+models. The notion of sparsity comes from the fact that, by the
+proper choice of dictionary <m:math><m:mi>Ψ</m:mi></m:math>, many real-world signals <m:math><m:mrow><m:mi>x</m:mi><m:mo>=</m:mo><m:mi>Ψ</m:mi><m:mi>α</m:mi></m:mrow></m:math> have coefficient vectors <m:math><m:mi>α</m:mi></m:math> containing few
+large entries, but across different signals the locations (indices
+in <m:math><m:mi>α</m:mi></m:math>) of the large entries may change. We say a signal is
+strictly sparse (or “<m:math><m:mi>K</m:mi></m:math>-sparse”) if all but <m:math><m:mi>K</m:mi></m:math>
+entries of <m:math><m:mi>α</m:mi></m:math> are zero.</para>
+        <para id="id2254854">Some examples of real-world signals for which sparse models have
+been proposed include neural spike trains (in time), music and
+other audio recordings (in time and frequency), natural images (in
+the wavelet or curvelet
+dictionaries <link target-id="bid0"/>, <link target-id="bid1"/>, <link target-id="bid2"/>, <link target-id="bid3"/>, <link target-id="bid4"/>, <link target-id="bid5"/>, <link target-id="bid6"/>, <link target-id="bid7"/>),
+video sequences (in a 3-D wavelet
+dictionary <link target-id="bid8"/>, <link target-id="bid9"/>), and sonar or radar pulses
+(in a chirplet dictionary <link target-id="bid10"/>). In each of these
+cases, the relevant information in a sparse representation of a
+signal is encoded in both the <emphasis>locations</emphasis> (indices) of the
+significant coefficients and the <emphasis>values</emphasis> to which they are
+assigned. This type of uncertainty is an appropriate model for
+many natural signals with punctuated phenomena.</para>
+        <para id="id2254941">Sparsity is a <emphasis>nonlinear</emphasis> model. In particular, let
+<m:math><m:msub><m:mi>Σ</m:mi><m:mi>K</m:mi></m:msub></m:math> denote the set of all <m:math><m:mi>K</m:mi></m:math>-sparse
+signals for a given dictionary. It is easy to see that the set
+<m:math><m:msub><m:mi>Σ</m:mi><m:mi>K</m:mi></m:msub></m:math> is not closed under addition. (In fact,
+<m:math><m:mrow><m:msub><m:mi>Σ</m:mi><m:mi>K</m:mi></m:msub><m:mo>+</m:mo><m:msub><m:mi>Σ</m:mi><m:mi>K</m:mi></m:msub><m:mo>=</m:mo><m:msub><m:mi>Σ</m:mi><m:mrow><m:mn>2</m:mn><m:mi>K</m:mi></m:mrow></m:msub></m:mrow></m:math>.) From
+a geometric perspective, the set of all <m:math><m:mi>K</m:mi></m:math>-sparse signals
+from the dictionary <m:math><m:mi>Ψ</m:mi></m:math> forms not a hyperplane but rather a
+union of <m:math><m:mi>K</m:mi></m:math>-dimensional hyperplanes, each spanned by
+<m:math><m:mi>K</m:mi></m:math> vectors of <m:math><m:mi>Ψ</m:mi></m:math> (see
+<link target-id="uid2"/>(b)). For a dictionary <m:math><m:mi>Ψ</m:mi></m:math> with
+<m:math><m:mi>Z</m:mi></m:math> entries, there are <m:math><m:mfenced separators="" open="(" close=")"><m:mfrac linethickness="0pt"><m:mi>Z</m:mi><m:mi>K</m:mi></m:mfrac></m:mfenced></m:math> such
+hyperplanes. (The geometry of sparse signal collections has also
+been described in terms of orthosymmetric sets;
+see <link target-id="bid11"/>.)</para>
+        <para id="id2255129">Signals that are not strictly sparse but rather have a few
+“large” and many “small” coefficients are known as <emphasis>compressible</emphasis> signals. The notion of compressibility can be made
+more precise by considering the rate at which the <emphasis>sorted</emphasis>
+magnitudes of the coefficients <m:math><m:mi>α</m:mi></m:math> decay, and this decay rate
+can in turn be related to the <m:math><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:math> norm of the coefficient
+vector <m:math><m:mi>α</m:mi></m:math>. Letting <m:math><m:mover accent="true"><m:mi>α</m:mi><m:mo>˜</m:mo></m:mover></m:math> denote a
+rearrangement of the vector <m:math><m:mi>α</m:mi></m:math> with the coefficients ordered
+in terms of decreasing magnitude, then the reordered coefficients
+satisfy <link target-id="bid12"/>
+<equation id="uid9087978234">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mover accent="true">
+                  <m:mi>α</m:mi>
+                  <m:mo>˜</m:mo>
+                </m:mover>
+                <m:mi>k</m:mi>
+              </m:msub>
+              <m:mo>≤</m:mo>
+              <m:msub>
+                <m:mrow>
+                  <m:mo>∥</m:mo>
+                  <m:mi>α</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:msub>
+                  <m:mi>ℓ</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+              </m:msub>
+              <m:msup>
+                <m:mi>k</m:mi>
+                <m:mrow>
+                  <m:mo>-</m:mo>
+                  <m:mn>1</m:mn>
+                  <m:mo>/</m:mo>
+                  <m:mi>p</m:mi>
+                </m:mrow>
+              </m:msup>
+              <m:mo>.</m:mo>
+            </m:mrow>
+          </m:math>
+        </equation>
+
+As we discuss in <link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->, these decay rates play an
+important role in <emphasis>nonlinear approximation</emphasis>, where adaptive,
+<m:math><m:mi>K</m:mi></m:math>-sparse representations from the dictionary are used to
+approximate a signal.</para>
+        
+        
+        <para id="id2255311">We recall from <link target-id="uid1"/> that for a smooth
+signal <m:math><m:mi>f</m:mi></m:math>, the largest Fourier and wavelet coefficients tend to
+cluster at coarse scales (low frequencies). Suppose, however, that
+the function <m:math><m:mi>f</m:mi></m:math> is piecewise smooth; i.e., it is
+<m:math><m:msup><m:mi mathvariant="script">C</m:mi><m:mi>H</m:mi></m:msup></m:math> at every point <m:math><m:mrow><m:mi>t</m:mi><m:mo>∈</m:mo><m:mi mathvariant="double-struck">R</m:mi></m:mrow></m:math> except for one
+point <m:math><m:msub><m:mi>t</m:mi><m:mn>0</m:mn></m:msub></m:math>, at which it is discontinuous. Naturally, this
+phenomenon will be reflected in the transform coefficients.
+In the Fourier domain, this discontinuity will have a global
+effect, as the overall smoothness of the function <m:math><m:mi>f</m:mi></m:math> has been
+reduced dramatically from <m:math><m:mi>H</m:mi></m:math> to 0.
+Wavelet coefficients, however, depend only on local signal
+properties, and so the wavelet basis functions whose supports do
+not include <m:math><m:msub><m:mi>t</m:mi><m:mn>0</m:mn></m:msub></m:math> will be unaffected by the discontinuity.
+Coefficients surrounding the singularity will decay only as
+<m:math><m:msup><m:mn>2</m:mn><m:mrow><m:mo>-</m:mo><m:mi>j</m:mi><m:mo>/</m:mo><m:mn>2</m:mn></m:mrow></m:msup></m:math>, but there are relatively few such coefficients.
+Indeed, at each scale there are only <m:math><m:mrow><m:mi>O</m:mi><m:mo>(</m:mo><m:mn>1</m:mn><m:mo>)</m:mo></m:mrow></m:math> wavelets that include
+<m:math><m:msub><m:mi>t</m:mi><m:mn>0</m:mn></m:msub></m:math> in their supports, but these locations are highly
+signal-dependent. (For modeling purposes, these significant
+coefficients will persist through scale down the parent-child tree
+structure.) After reordering by magnitude, the wavelet
+coefficients of piecewise smooth signals will have the same
+general decay rate as those of smooth signals. In
+<link document="m18727" target-id="uid4">Nonlinear Approximation from Approximation</link><!--Section 2.5.2-->, we see that the quality of nonlinear
+approximations offered by wavelets for smooth 1-D signals is not
+hampered by the addition of a finite number of discontinuities.</para>
+      </section>
+      <section id="uid5">
+        <title>Manifold models</title>
+        <para id="id2255508">Manifold models generalize the conciseness of sparsity-based
+signal models. In particular, in many situations where a signal is
+believed to have a concise description or “few degrees of
+freedom,” the result is that the signal will live on or near a
+particular submanifold of the ambient signal space.</para>
+        <section id="uid6">
+          <title>Parametric models</title>
+          <para id="id2255528">We begin with an abstract motivation for the manifold perspective.
+Consider a signal <m:math><m:mi>f</m:mi></m:math> (such as a natural image), and suppose that
+we can identify some single 1-D piece of information about that
+signal that could be variable; that is, other signals might
+rightly be called “similar” to <m:math><m:mi>f</m:mi></m:math> if they differ only in this
+piece of information. (For example, this 1-D parameter could
+denote the distance from some object in an image to the camera.)
+We let <m:math><m:mi>θ</m:mi></m:math> denote the variable parameter and write the signal
+as <m:math><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:math> to denote its dependence on <m:math><m:mi>θ</m:mi></m:math>. In a sense,
+<m:math><m:mi>θ</m:mi></m:math> is a single “degree of freedom” driving the generation
+of the signal <m:math><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:math> under this simple model. We let <m:math><m:mi>Θ</m:mi></m:math>
+denote the set of possible values of the parameter <m:math><m:mi>θ</m:mi></m:math>. If the
+mapping between <m:math><m:mi>θ</m:mi></m:math> and <m:math><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:math> is well-behaved, then the
+collection of signals <m:math><m:mrow><m:mo>{</m:mo><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub><m:mo>:</m:mo><m:mi>θ</m:mi><m:mo>∈</m:mo><m:mi>Θ</m:mi><m:mo>}</m:mo></m:mrow></m:math> forms a 1-D path in the ambient signal space.</para>
+          <para id="id2255697">More generally, when a signal has <m:math><m:mi>K</m:mi></m:math> degrees of freedom, we
+may model it as depending on some parameter <m:math><m:mi>θ</m:mi></m:math> that is chosen
+from a <m:math><m:mi>K</m:mi></m:math>-dimensional manifold <m:math><m:mi>Θ</m:mi></m:math>. (The parameter space
+<m:math><m:mi>Θ</m:mi></m:math> could be, for example, a subset of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>K</m:mi></m:msup></m:math>, or it
+could be a more general manifold such as SO(3).) We again let
+<m:math><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub></m:math> denote the signal corresponding to a particular choice
+of <m:math><m:mi>θ</m:mi></m:math>, and we let <m:math><m:mrow><m:mi mathvariant="script">F</m:mi><m:mo>=</m:mo><m:mo>{</m:mo><m:msub><m:mi>f</m:mi><m:mi>θ</m:mi></m:msub><m:mo>:</m:mo><m:mi>θ</m:mi><m:mo>∈</m:mo><m:mi>Θ</m:mi><m:mo>}</m:mo></m:mrow></m:math>. Assuming the mapping <m:math><m:mi>f</m:mi></m:math> is continuous and injective over <m:math><m:mi>Θ</m:mi></m:math>
+(and its inverse is continuous), then by virtue of the manifold
+structure of <m:math><m:mi>Θ</m:mi></m:math>, its image <m:math><m:mi mathvariant="script">F</m:mi></m:math> will correspond to a
+<m:math><m:mi>K</m:mi></m:math>-dimensional manifold embedded in the ambient signal space
+(see <link target-id="uid2"/>(c)).</para>
+          <para id="id2255887">These types of parametric models arise in a number of scenarios in
+signal processing. Examples include: signals of unknown
+translation, sinusoids of unknown frequency (across a continuum of
+possibilities), linear radar chirps described by a starting and
+ending time and frequency, tomographic or light field images with
+articulated camera positions, robotic systems with few physical
+degrees of freedom, dynamical systems with low-dimensional
+attractors <link target-id="bid13"/>, <link target-id="bid14"/>, and so on.</para>
+          <para id="id2255916">In general, parametric signals manifolds are <emphasis>nonlinear</emphasis> (by
+which we mean non-affine as well); this can again be seen by
+considering the sum of two signals <m:math><m:mrow><m:msub><m:mi>f</m:mi><m:msub><m:mi>θ</m:mi><m:mn>0</m:mn></m:msub></m:msub><m:mo>+</m:mo><m:msub><m:mi>f</m:mi><m:msub><m:mi>θ</m:mi><m:mn>1</m:mn></m:msub></m:msub></m:mrow></m:math>. In
+many interesting situations, signal manifolds are <emphasis>non-differentiable</emphasis> as well. </para>
+        </section>
+        <section id="uid7">
+          <title>Nonparametric models</title>
+          <para id="id2255981">Manifolds have also been used to model signals for which there is
+no known parametric model. Examples include images of faces and
+handwritten digits <link target-id="bid15"/>, <link target-id="bid16"/>, which have been found
+empirically to cluster near low-dimensional manifolds.
+Intuitively, because of the configurations of human joints and
+muscles, it may be conceivable that there are relatively “few”
+degrees of freedom driving the appearance of a human face or the
+style of handwriting; however, this inclination is difficult or
+impossible to make precise. Nonetheless, certain applications in
+face and handwriting recognition have benefitted from algorithms
+designed to discover and exploit the nonlinear manifold-like
+structure of signal collections.
+<link document="m18732" target-id="uid1">Manifold Learning from Dimensionality Reduction</link> <!--Section 2.7.1--> discusses such methods for
+learning parametrizations and other information from data living
+along manifolds.</para>
+          <para id="id2256022">Much more generally, one may consider, for example, the set of
+<emphasis>all</emphasis> natural images. Clearly, this set has small volume with
+respect to the ambient signal space — generating an image
+randomly pixel-by-pixel will almost certainly produce an unnatural
+noise-like image. Again, it is conceivable that, at least locally,
+this set may have a low-dimensional manifold-like structure: from
+a given image, one may be able to identify only a limited number
+of meaningful changes that could be performed while still
+preserving the natural look to the image. Arguably, most work in
+signal modeling could be interpreted in some way as a search for
+this overall structure. </para>
+        </section>
+     
+    </section>
+  </content>
+  <bib:file>
+    <bib:entry id="bid10">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Baraniuk, R. G. and Jones, D. L.</bib:author>
+        <bib:title>Shear Madness: New Orthogonal Bases and Frames Using Chirp Functions</bib:title>
+        <bib:journal>IEEE Trans. Signal Proc.</bib:journal>
+        <bib:year>1993</bib:year>
+<!--optional fields-->
+        <bib:volume>41</bib:volume>
+        <bib:number>12</bib:number>
+        <bib:pages>3543-3549</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid13">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Broomhead, D. S. and Kirby, M.</bib:author>
+        <bib:title>A New Approach for Dimensionality Reduction: Theory and Algorithms</bib:title>
+        <bib:journal>SIAM J. of Applied Mathematics</bib:journal>
+        <bib:year>2000</bib:year>
+<!--optional fields-->
+        <bib:volume>60</bib:volume>
+        <bib:number>6</bib:number>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid14">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Broomhead, D. S. and Kirby, M. J.</bib:author>
+        <bib:title>The Whitney Reduction Network: A method for computing autoassociative graphs</bib:title>
+        <bib:journal>Neural Computation</bib:journal>
+        <bib:year>2001</bib:year>
+<!--optional fields-->
+        <bib:volume>13</bib:volume>
+        <bib:number/>
+        <bib:pages>2595-2616</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid16">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Belkin, M. and Niyogi, P.</bib:author>
+        <bib:title>Laplacian Eigenmaps for Dimensionality Reduction and Data Representation</bib:title>
+        <bib:journal>Neural Computation</bib:journal>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:volume>15</bib:volume>
+        <bib:number>6</bib:number>
+        <bib:pages/>
+        <bib:month>June</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid7">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Candès, E. and Donoho, D. L.</bib:author>
+        <bib:title>New tight frames of curvelets and optimal representations of objects with piecewise <!--Math is not currently allowed within BibTeXML.--> singularities</bib:title>
+        <bib:journal>Comm. on Pure and Applied Math.</bib:journal>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume>57</bib:volume>
+        <bib:number/>
+        <bib:pages>219-266</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid6">
+      <bib:incollection>
+<!--required fields-->
+        <bib:author>Candès, E. J. and Donoho, D. L.</bib:author>
+        <bib:title>Curvelets: A suprisingly effective nonadaptive representation for objects with edges</bib:title>
+        <bib:booktitle>Curve and Surface Fitting</bib:booktitle>
+        <bib:publisher>Vanderbilt University Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:editor>Cohen, A. and Rabut, C. and Schumaker, L. L.</bib:editor>
+        <bib:number/>
+        <bib:series/>
+        <bib:type/>
+        <bib:chapter/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:incollection>
+    </bib:entry>
+    <bib:entry id="bid12">
+      <bib:article>
+<!--required fields-->
+        <bib:author>DeVore, R. A.</bib:author>
+        <bib:title>Lecture notes on Compressed Sensing</bib:title>
+        <bib:journal>Rice University ELEC 631 Course Notes</bib:journal>
+        <bib:year>Spring 2006</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid1">
+      <bib:article>
+<!--required fields-->
+        <bib:author>DeVore, R. A. and Jawerth, B. and Lucier, B. J.</bib:author>
+        <bib:title>Image Compression Through Wavelet Transform Coding</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>1992</bib:year>
+<!--optional fields-->
+        <bib:volume>38</bib:volume>
+        <bib:number>2</bib:number>
+        <bib:pages>719-746</bib:pages>
+        <bib:month>Mar.</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid11">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. L.</bib:author>
+        <bib:title>Unconditional bases are optimal bases for data compression and for statistical estimation</bib:title>
+        <bib:journal>Appl. Comput. Harmon. Anal.</bib:journal>
+        <bib:year>1993</bib:year>
+<!--optional fields-->
+        <bib:volume>1</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages>100-115</bib:pages>
+        <bib:month>Dec.</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid5">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Donoho, D. L.</bib:author>
+        <bib:title>Denoising by soft-thresholding</bib:title>
+        <bib:journal>IEEE Trans. Inform. Theory</bib:journal>
+        <bib:year>1995</bib:year>
+<!--optional fields-->
+        <bib:volume>41</bib:volume>
+        <bib:number>3</bib:number>
+        <bib:pages>613-627</bib:pages>
+        <bib:month>May</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid3">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>LoPresto, S. and Ramchandran, K. and Orchard, M. T.</bib:author>
+        <bib:title>Image coding based on mixture modeling of wavelet coefficients and a fast estimation-quantization framework</bib:title>
+        <bib:booktitle>Proc. Data Compression Conf.</bib:booktitle>
+        <bib:year>1997</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages>221-230</bib:pages>
+        <bib:address>Snowbird, Utah</bib:address>
+        <bib:month>March</bib:month>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid0">
+      <bib:book>
+<!--required fields-->
+        <bib:author>Mallat, S.</bib:author>
+        <bib:title>A wavelet tour of signal processing</bib:title>
+        <bib:publisher>Academic Press</bib:publisher>
+        <bib:year>1999</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:series/>
+        <bib:address>San Diego, CA, USA</bib:address>
+        <bib:edition/>
+        <bib:month/>
+        <bib:note/>
+      </bib:book>
+    </bib:entry>
+    <bib:entry id="bid8">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Mehrseresht, N. and Taubman, D.</bib:author>
+        <bib:title>An efficient content-adaptive motion compensated 3D-DWT with enhanced spatial and temporal scalability</bib:title>
+        <bib:journal/>
+        <bib:year>2004</bib:year>
+<!--optional fields-->
+        <bib:volume/>
+        <bib:number/>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note>Preprint</bib:note>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid2">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Shapiro, J.</bib:author>
+        <bib:title>Embedded image coding using zerotrees of wavelet coefficients</bib:title>
+        <bib:journal>IEEE Trans. Signal Processing</bib:journal>
+        <bib:year>1993</bib:year>
+<!--optional fields-->
+        <bib:volume>41</bib:volume>
+        <bib:number>12</bib:number>
+        <bib:pages>3445-3462</bib:pages>
+        <bib:month>Dec.</bib:month>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid9">
+      <bib:inproceedings>
+<!--required fields-->
+        <bib:author>Selesnick, I. W. and Li, K. L.</bib:author>
+        <bib:title>Video denoising using 2D and 3D dual-tree complex wavelet transforms</bib:title>
+        <bib:booktitle>Proc. SPIE Wavelet Applications Signal Image Processing X</bib:booktitle>
+        <bib:year>2003</bib:year>
+<!--optional fields-->
+        <bib:editor/>
+        <bib:number/>
+        <bib:series/>
+        <bib:pages/>
+        <bib:address/>
+        <bib:month/>
+        <bib:organization/>
+        <bib:publisher/>
+        <bib:note/>
+      </bib:inproceedings>
+    </bib:entry>
+    <bib:entry id="bid15">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Turk, M. and Pentland, A.</bib:author>
+        <bib:title>Eigenfaces for Recognition</bib:title>
+        <bib:journal>J. Cognitive Neuroscience</bib:journal>
+        <bib:year>1991</bib:year>
+<!--optional fields-->
+        <bib:volume>3</bib:volume>
+        <bib:number>1</bib:number>
+        <bib:pages/>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+    <bib:entry id="bid4">
+      <bib:article>
+<!--required fields-->
+        <bib:author>Xiong, Z. and Ramchandran, K. and Orchard, M. T.</bib:author>
+        <bib:title>Space-frequency Quantization for Wavelet Image Coding</bib:title>
+        <bib:journal>IEEE Trans. Image Processing</bib:journal>
+        <bib:year>1997</bib:year>
+<!--optional fields-->
+        <bib:volume>6</bib:volume>
+        <bib:number>5</bib:number>
+        <bib:pages>677-693</bib:pages>
+        <bib:month/>
+        <bib:note/>
+      </bib:article>
+    </bib:entry>
+  </bib:file>
+</document>

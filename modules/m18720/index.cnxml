@@ -1,0 +1,304 @@
+<document xmlns="http://cnx.rice.edu/cnxml" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:md="http://cnx.rice.edu/mdml">
+  <title>Introduction to Concise Signal Models</title>
+  <metadata>
+  <md:content-id>m18720</md:content-id><md:title>Introduction to Concise Signal Models</md:title>
+  <md:abstract>This collection reviews fundamental concepts underlying the use of concise models for signal processing. Topics are presented from a geometric perspective and include low-dimensional linear, sparse, and manifold-based signal models, approximation, compression, dimensionality reduction, and Compressed Sensing.</md:abstract>
+  <md:uuid>f1c3f932-5420-4443-be58-75f76f0340dc</md:uuid>
+</metadata>
+
+<content>
+<section id="fs-id49001959">
+<title>Overview</title>
+<para id="element-24235">
+In characterizing a given problem in signal processing, one is often able to specify a model for
+the signals to be processed. This model may distinguish (either statistically or deterministically)
+classes of interesting signals from uninteresting ones, typical signals from anomalies, information
+from noise, etc.</para>
+<para id="element-2349698234">
+Very commonly, models in signal processing deal with some notion of structure, constraint,
+or conciseness. Roughly speaking, one often believes that a signal has “few degrees of freedom”
+relative to the size of the signal. This notion of conciseness is a very powerful assumption, and it
+suggests the potential for dramatic gains via algorithms that capture and exploit the true underlying
+structure of the signal.</para>
+<para id="element-2342352523">
+In these modules, we survey three common examples of concise models: linear models, sparse
+nonlinear models, and manifold-based models. In each case, we discuss an important phenomenon:
+the conciseness of the model corresponds to a low-dimensional geometric structure along which the
+signals of interest tend to cluster. This low-dimensional geometry again has important implications
+in the understanding and the development of efficient algorithms for signal processing.</para>
+<para id="element-989869234">We discuss this low-dimensional geometry in several contexts, including projecting a signal onto
+the model class (i.e., forming a concise approximation to a signal), encoding such an approximation
+(i.e., data compression), and reducing the dimensionality of signals and data sets. We conclude with
+an important and emerging application area known as Compressed Sensing (CS), which is a novel method
+for data acquisition that relies on concise models and builds upon strong geometric principles. We
+discuss CS in its traditional, sparsity-based context and also discuss extensions of CS to other
+concise models such as manifolds.</para>
+</section>
+<section id="fs-id49079733">
+<title>General Mathematical Preliminaries</title>
+
+      <section id="uid1">
+        <title>Signal notation</title>
+        <para id="id2253748">We will treat signals as real- or complex-valued functions having
+domains that are either discrete (and finite) or continuous (and
+either compact or infinite). Each of these assumptions will be
+made clear as needed. As a general
+rule, however, we will use <m:math><m:mi>x</m:mi></m:math> to denote a discrete signal in
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> and <m:math><m:mi>f</m:mi></m:math> 
+to denote a function over a continuous
+domain <m:math><m:mi mathvariant="script">D</m:mi></m:math>. We also commonly refer to these as discrete- or
+continuous-<emphasis>time</emphasis> signals, though the domain need not actually
+be temporal in nature. </para>
+      </section>
+      <section id="uid2">
+        <title>Lp and lp norms</title>
+        <para id="id2253850">As measures for signal energy, fidelity, or sparsity, we will employ the <m:math><m:msub><m:mi>L</m:mi><m:mi>p</m:mi></m:msub></m:math> and <m:math><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:math> norms. For continuous-time
+functions, the <m:math><m:msub><m:mi>L</m:mi><m:mi>p</m:mi></m:msub></m:math> norm is defined as
+<equation id="uid78798374985">
+
+          <m:math mode="display">
+            <m:mtable displaystyle="true">
+              <m:mtr>
+                <m:mtd columnalign="right">
+                  <m:msub>
+                    <m:mrow>
+                      <m:mo>∥</m:mo>
+                      <m:mi>f</m:mi>
+                      <m:mo>∥</m:mo>
+                    </m:mrow>
+                    <m:mrow>
+                      <m:msub>
+                        <m:mi>L</m:mi>
+                        <m:mi>p</m:mi>
+                      </m:msub>
+                      <m:mrow>
+                        <m:mo>(</m:mo>
+                        <m:mi mathvariant="script">D</m:mi>
+                        <m:mo>)</m:mo>
+                      </m:mrow>
+                    </m:mrow>
+                  </m:msub>
+                </m:mtd>
+                <m:mtd>
+                  <m:mo>=</m:mo>
+                </m:mtd>
+                <m:mtd columnalign="left">
+                  <m:mrow>
+                    <m:msup>
+                      <m:mfenced separators="" open="(" close=")">
+                        <m:msub>
+                          <m:mo>∫</m:mo>
+                          <m:mi mathvariant="script">D</m:mi>
+                        </m:msub>
+                        <m:msup>
+                          <m:mrow>
+                            <m:mo>|</m:mo>
+                            <m:mi>f</m:mi>
+                            <m:mo>|</m:mo>
+                          </m:mrow>
+                          <m:mi>p</m:mi>
+                        </m:msup>
+                      </m:mfenced>
+                      <m:mrow>
+                        <m:mn>1</m:mn>
+                        <m:mo>/</m:mo>
+                        <m:mi>p</m:mi>
+                      </m:mrow>
+                    </m:msup>
+                    <m:mo>,</m:mo>
+                    <m:mspace width="1.em"/>
+                    <m:mi>p</m:mi>
+                    <m:mo>∈</m:mo>
+                    <m:mrow>
+                      <m:mo>(</m:mo>
+                      <m:mn>0</m:mn>
+                      <m:mo>,</m:mo>
+                      <m:mi>∞</m:mi>
+                      <m:mo>)</m:mo>
+                    </m:mrow>
+                    <m:mo>,</m:mo>
+                  </m:mrow>
+                </m:mtd>
+              </m:mtr>
+            </m:mtable>
+          </m:math>
+        </equation>
+and for discrete-time functions, the <m:math><m:msub><m:mi>ℓ</m:mi><m:mi>p</m:mi></m:msub></m:math> norm is defined as
+<equation id="uid8989898">
+
+          <m:math mode="display">
+            <m:mrow>
+              <m:msub>
+                <m:mrow>
+                  <m:mo>∥</m:mo>
+                  <m:mi>x</m:mi>
+                  <m:mo>∥</m:mo>
+                </m:mrow>
+                <m:msub>
+                  <m:mi>ℓ</m:mi>
+                  <m:mi>p</m:mi>
+                </m:msub>
+              </m:msub>
+              <m:mo>=</m:mo>
+              <m:mfenced separators="" open="{" close="">
+                <m:mtable>
+                  <m:mtr>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:mrow>
+                          <m:mo>(</m:mo>
+                        </m:mrow>
+                        <m:munderover>
+                          <m:mo>∑</m:mo>
+                          <m:mrow>
+                            <m:mi>i</m:mi>
+                            <m:mo>=</m:mo>
+                            <m:mn>1</m:mn>
+                          </m:mrow>
+                          <m:mi>N</m:mi>
+                        </m:munderover>
+                        <m:msup>
+                          <m:mrow>
+                            <m:mo>|</m:mo>
+                            <m:mi>x</m:mi>
+                            <m:mrow>
+                              <m:mo>(</m:mo>
+                              <m:mi>i</m:mi>
+                              <m:mo>)</m:mo>
+                            </m:mrow>
+                            <m:mo>|</m:mo>
+                          </m:mrow>
+                          <m:mi>p</m:mi>
+                        </m:msup>
+                        <m:msup>
+                          <m:mrow>
+                            <m:mo>)</m:mo>
+                          </m:mrow>
+                          <m:mrow>
+                            <m:mn>1</m:mn>
+                            <m:mo>/</m:mo>
+                            <m:mi>p</m:mi>
+                          </m:mrow>
+                        </m:msup>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:mi>p</m:mi>
+                        <m:mo>∈</m:mo>
+                        <m:mo>(</m:mo>
+                        <m:mn>0</m:mn>
+                        <m:mo>,</m:mo>
+                        <m:mi>∞</m:mi>
+                        <m:mo>)</m:mo>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:munder>
+                          <m:mo movablelimits="true" form="prefix">max</m:mo>
+                          <m:mrow>
+                            <m:mi>i</m:mi>
+                            <m:mo>=</m:mo>
+                            <m:mn>1</m:mn>
+                            <m:mo>,</m:mo>
+                            <m:mo>⋯</m:mo>
+                            <m:mo>,</m:mo>
+                            <m:mi>N</m:mi>
+                          </m:mrow>
+                        </m:munder>
+                        <m:mrow>
+                          <m:mo>|</m:mo>
+                          <m:mi>x</m:mi>
+                          <m:mrow>
+                            <m:mo>(</m:mo>
+                            <m:mi>i</m:mi>
+                            <m:mo>)</m:mo>
+                          </m:mrow>
+                          <m:mo>|</m:mo>
+                        </m:mrow>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:mi>p</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>∞</m:mi>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                  <m:mtr>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:munderover>
+                          <m:mo>∑</m:mo>
+                          <m:mrow>
+                            <m:mi>i</m:mi>
+                            <m:mo>=</m:mo>
+                            <m:mn>1</m:mn>
+                          </m:mrow>
+                          <m:mi>N</m:mi>
+                        </m:munderover>
+                        <m:msub>
+                          <m:mn mathvariant="bold">1</m:mn>
+                          <m:mrow>
+                            <m:mi>x</m:mi>
+                            <m:mo>(</m:mo>
+                            <m:mi>i</m:mi>
+                            <m:mo>)</m:mo>
+                            <m:mo>≠</m:mo>
+                            <m:mn>0</m:mn>
+                          </m:mrow>
+                        </m:msub>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                    <m:mtd columnalign="left">
+                      <m:mrow>
+                        <m:mi>p</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mn>0</m:mn>
+                        <m:mo>,</m:mo>
+                      </m:mrow>
+                    </m:mtd>
+                  </m:mtr>
+                </m:mtable>
+              </m:mfenced>
+            </m:mrow>
+          </m:math>
+        </equation>
+where <m:math><m:mn mathvariant="bold">1</m:mn></m:math> denotes the indicator function. (While we often
+refer to these measures as “norms,” they actually do not meet
+the technical criteria for norms when <m:math><m:mrow><m:mi>p</m:mi><m:mo>&lt;</m:mo><m:mn>1</m:mn></m:mrow></m:math>.)</para>
+        
+        
+        
+        
+        
+      </section>
+      <section id="uid3">
+        <title>Linear algebra</title>
+        <para id="id2254713">Let <m:math><m:mi>A</m:mi></m:math> be a real-valued <m:math><m:mrow><m:mi>M</m:mi><m:mo>×</m:mo><m:mi>N</m:mi></m:mrow></m:math> matrix. We denote the
+<emphasis>nullspace</emphasis> of <m:math><m:mi>A</m:mi></m:math> as <m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mi>A</m:mi><m:mo>)</m:mo></m:mrow></m:math> (note that
+<m:math><m:mrow><m:mi mathvariant="script">N</m:mi><m:mo>(</m:mo><m:mi>A</m:mi><m:mo>)</m:mo></m:mrow></m:math> is a linear subspace of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>), and we
+denote the <emphasis>transpose</emphasis> of <m:math><m:mi>A</m:mi></m:math> as <m:math><m:mrow><m:mi>A</m:mi><m:msup><m:mrow/><m:mi>T</m:mi></m:msup></m:mrow></m:math>.</para>
+        <para id="id2254837">We call <m:math><m:mi>A</m:mi></m:math> an <emphasis>orthoprojector</emphasis> from <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math> to
+<m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>M</m:mi></m:msup></m:math> if it has orthonormal rows. From such a matrix we
+call <m:math><m:mrow><m:msup><m:mi>A</m:mi><m:msup><m:mrow/><m:mi>T</m:mi></m:msup></m:msup><m:mi>A</m:mi></m:mrow></m:math> the corresponding <emphasis>orthogonal projection
+operator</emphasis> onto the <m:math><m:mi>M</m:mi></m:math>-dimensional subspace of <m:math><m:msup><m:mi mathvariant="double-struck">R</m:mi><m:mi>N</m:mi></m:msup></m:math>
+spanned by the rows of <m:math><m:mi>A</m:mi></m:math>.</para>
+      </section>
+</section> 
+
+
+
+
+  </content>
+  
+</document>
